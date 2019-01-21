@@ -5,7 +5,7 @@ package Bottles is
 
     type Bottle is tagged record
         Name : String_Access;
-        Remaining_Vol : Volume;
+        Remaining_Vol : Volume; -- Remaining Volume in the bottle in ml
     end record
     with Dynamic_Predicate => Remaining_Vol > 0;
 
