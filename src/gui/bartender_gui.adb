@@ -1,4 +1,9 @@
 package body Bartender_GUI is
+	procedure callbackDoRecipe(from : access Gtk_Button_Record'class) is
+		pragma Unreferenced (from);
+	begin
+		Put_Line("LOG: DO_RECIPE");
+	end;
 
 	function BartenderwinBasic return BarWinAccess is
 		ret : BarWinAccess;
@@ -7,7 +12,6 @@ package body Bartender_GUI is
 		addRecipe : Gtk_Menu_Item;
 		butts : ButtonArray(1..100);
 		title : String := "Ada Bartender";
-		
 	begin
 		-- setting up bartenderObj.Windowdow object
 		Gtk_New(bartenderObj.Window);
@@ -28,10 +32,11 @@ package body Bartender_GUI is
 		bartenderObj.MenuBar.Append(addBottle);		
 
 
-		-- setting up recipes box / buttons
+		-- setting up recipes box / buttons, connecting them to callback function
 		Gtk_New_VBox(bartenderObj.RecipeBox);
 		for i in 1..100 loop
 			Gtk_New(butts(i), "recipe ");
+			butts(i).On_Clicked(callbackDoRecipe'access);
 			bartenderObj.RecipeBox.Pack_End(butts(i));
 		end loop;
 
