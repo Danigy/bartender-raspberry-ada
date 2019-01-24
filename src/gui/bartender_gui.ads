@@ -11,21 +11,17 @@ with Gtk.Handlers;		use Gtk.Handlers;
 with Ada.Text_IO;		use Ada.Text_IO;
 with Recipes;			use Recipes;
 with Bottles;			use Bottles;
+with Bartender_Utils;		use Bartender_Utils;
 with p_callback;		use p_callback;
 
 package Bartender_GUI is
 
 	subtype Positive is Integer range 0 .. Integer'Last;
+
 	type Button is record
 		Button : Gtk_Button;
 		Rec : Recipe;
 	end record;
-
-	type RecipeArray is array(Positive range <>) of Recipe;
-	type RecipeArrAccess is access RecipeArray;
-
-	type BottleArray is array(Positive range <>) of Bottle;
-	type BottleArrAccess is access BottleArray;
 
 	type ButtonArray is array(Positive range <>) of Button;
 	type ButtArrAccess is access ButtonArray;
@@ -41,6 +37,12 @@ package Bartender_GUI is
 	end record;
 
 	type BarWinAccess is access BartenderWindow;
+
+	procedure DoRecipeErrorVolume;
+
+	function ReadRecipes return RecipeArrAccess;
+
+	function ReadBottles return BottleArrAccess;
 
 	function BartenderWinBasic return BarWinAccess;
 

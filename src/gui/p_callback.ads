@@ -9,5 +9,7 @@ with Gtk.Enums;			use Gtk.Enums;
 with Gtk.Bin;			use Gtk.Bin;
 with Gtk.Handlers;		use Gtk.Handlers;
 with Recipes;			use Recipes;
+with Bottles;			use Bottles;
+with Bartender_Utils;		use Bartender_Utils;
 
-package p_callback is new Gtk.Handlers.User_Callback(Gtk_Button_Record, Recipe);
+package p_callback is new Gtk.Handlers.User_Callback(Gtk_Button_Record, CallbackRecord);
