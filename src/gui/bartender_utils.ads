@@ -5,13 +5,13 @@ with Bottles;			use Bottles;
 package Bartender_Utils is
 
 	type RecipeArray is array(Positive range <>) of Recipe;
-	type RecipeArrAccess is access RecipeArray;
+	type RecipeArrAccess is access all RecipeArray;
 
 	type BottleArray is array(Positive range <>) of Bottle;
-	type BottleArrAccess is access BottleArray;
+	type BottleArrAccess is access all BottleArray;
 
 	-- I can pass only 1 object to a callback function
-	type CallbackRecord is record
+	type DoRecipeRecord is record
 		Rec : Recipe;
 		Bottles : BottleArrAccess;
 	end record;

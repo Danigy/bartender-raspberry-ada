@@ -1,10 +1,4 @@
 package body Bartender_GUI is
-
-	procedure DoRecipeErrorVolume is
-	begin
-		Put_Line("ERROR: remaining volume is not sufficient");
-	end;
-
 	-- Hardcoded for tests
 	function ReadRecipes return RecipeArrAccess is
 		ret : RecipeArrAccess;
@@ -47,34 +41,54 @@ package body Bartender_GUI is
 		return ret;
 	end;
 
-	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; cb : CallbackRecord) is
+
+	bottles : BottleArrAccess:= ReadBottles;
+
+	procedure callbackAddBottle(from : access Gtk_Menu_Item_Record'Class) is 	
+		pragma Unreferenced(from);
+		bot : Bottle := (Name => new String'("Test"), Remaining_Vol => 4242);
+	begin
+		Put_Line("LOG: adding bottle");
+		bottles := new BottleArray'(bottles.all & bot);
+		DumpBottleArrAccess(bottles);
+	end;
+
+	procedure DoRecipeErrorVolume is
+	begin
+		Put_Line("ERROR: remaining volume is not sufficient");
+	end;
+
+
+
+	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipe) is
 		pragma Unreferenced (from);
 	begin
-		Put("LOG: preparing "); Put_Line(cb.Rec.name.all);
-		for i in cb.Rec.Ingredients'First .. cb.Rec.Ingredients'Last loop
-			for j in cb.bottles'First .. cb.Bottles'Last loop
-				if cb.Rec.Ingredients(i).Name.all = cb.Bottles(j).name.all then
-					if cb.Rec.Ingredients(i).Vol < cb.Bottles(j).Remaining_Vol then
+		Put("LOG: preparing "); Put_Line(rec.name.all);
+		for i in rec.Ingredients'First .. rec.Ingredients'Last loop
+			for j in bottles'First .. bottles'Last loop
+				if rec.Ingredients(i).Name.all = bottles(j).name.all then
+					if rec.Ingredients(i).Vol < bottles(j).Remaining_Vol then
 						-- TODO call to the good GPIO / pump
-						RemoveRemainingVolume(cb.Bottles(j), cb.Rec.Ingredients(i).Vol);
+						RemoveRemainingVolume(bottles(j), rec.Ingredients(i).Vol);
 					else
 						DoRecipeErrorVolume;
-						DumpBottleArrAccess(cb.bottles);
-						return;
+						DumpBottleArrAccess(bottles);
 					end if;
 				end if;
 			end loop;
 		end loop;
-		DumpBottleArrAccess(cb.bottles);
+		DumpBottleArrAccess(bottles);
 	end;
 
 	function BartenderwinBasic return BarWinAccess is
 		ret 		: BarWinAccess;
 		bartenderObj 	: BartenderWindow;
-		addBottle 	: Gtk_Menu_Item;
+		menuBottle 	: Gtk_Menu;
+		bottle		: Gtk_Menu_Item;
+		replaceBottle	: Gtk_Menu_Item;
+		addBottle	: Gtk_Menu_Item;
 		addRecipe 	: Gtk_Menu_Item;
 		recipes 	: RecipeArrAccess := ReadRecipes;
-		bottles		: BottleArrAccess := ReadBottles;	
 		butts 		: ButtonArray(recipes'First..recipes'Last);
 		title : String := "Ada Bartender";
 	begin
@@ -86,23 +100,30 @@ package body Bartender_GUI is
 		-- setting up main box object
 		Gtk_New_VBox(bartenderObj.MainBox);
 
-		-- setting up bartenderObj.MenuBar bar
+		-- setting up Menu bar
 		Gtk_New(bartenderObj.MenuBar);
 		bartenderObj.MenuBar.set_pack_direction(Pack_Direction_LTR);
 		bartenderObj.MainBox.pack_start(bartenderObj.MenuBar, Expand => false, Fill => true);
-		-- setting up bartenderObj.MenuBar items
+
+		-- setting up Menu Bar items
+		Gtk_New(bottle, "Bottles");
+		Gtk_New(menuBottle);
+		bottle.Set_Submenu(menuBottle);
+		Gtk_New(replaceBottle, "Replace Bottle");
 		Gtk_New(addBottle, "Add Bottle");
 		Gtk_New(addRecipe, "Add Recipe");
+		menuBottle.append(replaceBottle);
+		menuBottle.append(addBottle);
 		bartenderObj.MenuBar.Append(addRecipe);
-		bartenderObj.MenuBar.Append(addBottle);	
+		bartenderObj.MenuBar.Append(bottle);	
+		Connect(addBottle, "activate", callbackAddBottle'access); 
 
 		-- setting up buttons for tests
 		Gtk_New_VBox(bartenderObj.RecipeBox);
 		for i in butts'First..butts'Last loop
 			Gtk_New(butts(i).Button, recipes(i).Name.all);
 			butts(i).Rec := recipes(i);
-			Connect (butts(i).Button, "clicked", callbackDoRecipe'access, 
-				(Rec => recipes(i), bottles => bottles));
+			Connect (butts(i).Button, "clicked", callbackDoRecipe'access, recipes(i));
 			bartenderObj.RecipeBox.Pack_End(butts(i).Button);
 		end loop;
 
