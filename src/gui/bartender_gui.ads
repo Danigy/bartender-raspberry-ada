@@ -9,7 +9,16 @@ with Gtk.Menu_Item;		use Gtk.Menu_Item;
 with Gtk.Enums;			use Gtk.Enums;
 with Gtk.Bin;			use Gtk.Bin;
 with Gtk.Handlers;		use Gtk.Handlers;
+with Gtk.Combo_Box;		use Gtk.Combo_Box;
+with Gtk.Combo_Box_Text;	use Gtk.Combo_Box_Text;
 with Ada.Text_IO;		use Ada.Text_IO;
+with Gtk.Dialog;		use Gtk.Dialog;
+with Gtk.Dialog;		use Gtk.Dialog ;
+with Gtk.Message_Dialog;	use Gtk.Message_Dialog ;
+with Gtk.About_Dialog;		use Gtk.About_Dialog ;
+with Gtk.GEntry;		use Gtk.GEntry;
+with Gtk.Main;			use Gtk.Main;
+
 with Recipes;			use Recipes;
 with Bottles;			use Bottles;
 with Bartender_Utils;		use Bartender_Utils;
@@ -33,7 +42,7 @@ package Bartender_GUI is
 	type ButtonArray is array(Positive range <>) of Button;
 	type ButtArrAccess is access ButtonArray;
 
-	type BartenderWindow is record
+	type BartenderGUI is record
 		Window 		: Gtk_Window;
 		MainBox 	: Gtk_VBox;
 		MenuBar 	: Gtk_Menu_bar;
@@ -43,7 +52,11 @@ package Bartender_GUI is
 		Bottles		: BottleArrAccess;
 	end record;
 
-	type BarWinAccess is access BartenderWindow;
+	type GUIAccess is access BartenderGUI;
+
+	GUI : GUIAccess;
+	bottles : BottleArrAccess;
+	recipes	: RecipeArrAccess; 
 
 	procedure DoRecipeErrorVolume;
 
@@ -51,6 +64,8 @@ package Bartender_GUI is
 
 	function ReadBottles return BottleArrAccess;
 
-	function BartenderWinBasic return BarWinAccess;
+	procedure InitGUI;
+
+	procedure RunGUI;
 
 end Bartender_GUI;

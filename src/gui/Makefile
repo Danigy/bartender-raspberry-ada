@@ -4,7 +4,7 @@ all: gui
 
 .PHONY: clean
 
-gui:
+gui: clean
 	gprbuild 
 
 clean:
