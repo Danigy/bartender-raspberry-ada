@@ -2,21 +2,26 @@ package body Bartender_Utils is
 
 	procedure DumpBottleArrAccess(bottles : BottleArrAccess) is
 	begin
-		Put_Line("Bottles dump : ");
+		Put_Line("BOTTLES DUMP :");
+		Put_Line("==============");
 		for i in bottles'First .. bottles'Last loop
 			Put(bottles(i).Name.all); Put(": "); 
-			Put(bottles(i).Remaining_Vol'Image); Put_Line("ml");
+			Put(bottles(i).Remaining_Vol'Image); 
+			Put_Line("ml");
 		end loop;
 		Put_Line("");
 	end;
 
 	procedure DumpRecipeArrAccess(recipes : RecipeArrAccess) is
 	begin
-		Put_Line("Recipes dump : ");
+		Put_Line("RECIPES DUMP :");
+		Put_Line("==============");
 		for i in recipes'First .. recipes'Last loop
-			Put(recipes(i).Name.all); Put(": "); 
+			Put(recipes(i).Name.all);
+			Put(": "); 
 			for j in recipes(i).Ingredients'First .. recipes(i).Ingredients'Last loop
-				Put(recipes(i).Ingredients(j).Vol'Image); Put_Line("ml");
+				Put(recipes(i).Ingredients(j).Vol'Image); 
+				Put_Line("ml");
 			end loop;
 		end loop;
 		Put_Line("");

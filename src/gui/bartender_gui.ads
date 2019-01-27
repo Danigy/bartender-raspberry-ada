@@ -29,14 +29,16 @@ package Bartender_GUI is
 	use ItemHandler;
 
 	
-	package ButtonHandler is new Gtk.Handlers.User_Callback(Gtk_Button_Record, Recipe);
+	package ButtonHandler is new Gtk.Handlers.User_Callback(Gtk_Button_Record, Recipes.Recipe);
 	use ButtonHandler;
+
+	type StringAccess is access all String;
 
 	subtype Positive is Integer range 0 .. Integer'Last;
 
 	type Button is record
 		Button : Gtk_Button;
-		Rec : Recipe;
+		Rec : Recipes.Recipe;
 	end record;
 
 	type ButtonArray is array(Positive range <>) of Button;
@@ -53,18 +55,6 @@ package Bartender_GUI is
 	end record;
 
 	type GUIAccess is access BartenderGUI;
-
-	GUI : GUIAccess;
-	bottles : BottleArrAccess;
-	recipes	: RecipeArrAccess; 
-
-	procedure DoRecipeErrorVolume;
-
-	function ReadRecipes return RecipeArrAccess;
-
-	function ReadBottles return BottleArrAccess;
-
-	procedure InitGUI;
 
 	procedure RunGUI;
 
