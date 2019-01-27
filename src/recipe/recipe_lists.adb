@@ -1,4 +1,4 @@
-package body Available_Recipes is
+package body Recipe_lists is
 
     function Init return Recipe_list is
     begin
@@ -20,5 +20,4 @@ package body Available_Recipes is
         end loop;
         return It.all;
     end Get;
-end Available_Recipes;
-
+end Recipe_Lists;
