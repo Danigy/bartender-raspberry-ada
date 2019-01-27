@@ -1,4 +1,4 @@
-with Recipes, Available_Recipes; use Available_Recipes;
+with Recipes, Recipe_Lists; use Recipe_Lists;
 
 package Recipe_CSV is
 

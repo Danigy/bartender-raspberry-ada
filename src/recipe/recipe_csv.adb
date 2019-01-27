@@ -1,11 +1,11 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Recipes, Available_Recipes; use Available_Recipes;
+with Recipes, Recipe_Lists; use Recipe_Lists;
 
 package body Recipe_CSV is
 
     function ReadCSV (Filename : String) return Recipe_List is
         File : File_Type;
-        RecipeList : Recipe_List := Available_Recipes.Init;
+        RecipeList : Recipe_List := Recipe_Lists.Init;
     begin
         Open (File => File,
               Mode => In_File,
