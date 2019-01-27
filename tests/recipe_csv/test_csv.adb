@@ -1,9 +1,9 @@
 with Ada.text_IO, Recipe_CSV; use Ada.Text_IO;
-with Available_Recipes; use Available_Recipes;
+with Recipe_Lists; use Recipe_Lists;
 with Recipes;
 
 procedure Test_CSV is
-    Filename : String := "test.txt";
+    Filename : String := "test.csv";
     List : Recipe_List := Recipe_CSV.ReadCSV(Filename);
     procedure Print_Recipe(Recipe : Available_Recipe) is
         Cocktail : Recipes.Recipe := Recipe.Cocktail;

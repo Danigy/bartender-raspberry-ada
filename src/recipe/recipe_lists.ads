@@ -1,6 +1,6 @@
 with Recipes;
 
-package Available_Recipes is
+package Recipe_lists is
     type Available_Recipe;
     type Available_Recipe_Access is access Available_Recipe;
 
@@ -20,4 +20,4 @@ package Available_Recipes is
     function Get(This : Recipe_List; Elt : Natural) return Available_Recipe
         with Pre => Elt < This.Length;
 
-end Available_Recipes;
+end Recipe_lists;
