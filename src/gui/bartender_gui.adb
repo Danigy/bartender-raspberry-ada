@@ -41,6 +41,24 @@ package body Bartender_GUI is
 		GUI.Window.Show_All;
 	end;
 
+	procedure UpdateBottleButts is
+		
+	begin
+		for i in GUI.BottleButts'first .. GUI.BottleButts'last loop
+			Remove(GUI.BottleBox, GUI.BottleButts(i).Button);
+		end loop;
+
+		GUI.BottleButts := new BotButtonArray(bots'First..bots'Last);
+		for i in GUI.BottleButts'First..GUI.BottleButts'Last loop
+			Gtk_New(GUI.BottleButts(i).Button, bots(i).Name.all);
+			GUI.BottleButts(i).Bot := bots(i);
+			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
+		end loop;
+		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
+
+		GUI.Window.Show_All;
+	end;
+
 	function ReadRecipes return RecipeArrAccess is
 		ret : RecipeArrAccess;
 	begin
@@ -215,7 +233,7 @@ package body Bartender_GUI is
 			Put_Line("Cancel bottle replacement");
 		end if;
 		dialog.destroy;
-
+		UpdateBottleButts;
 	end;
 
 	procedure callbackRefillBottle(from : access Gtk_Menu_Item_Record'Class) is
@@ -298,6 +316,7 @@ package body Bartender_GUI is
 		end if;
 		dialog.destroy;
 		DumpBottleArrAccess(bots);
+		UpdateBottleButts;
 	end;
 
 	procedure DoRecipeErrorVolume(rec : Recipes.Recipe; bot : Bottles.Bottle) is
