@@ -1,5 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
-with Draughts, Bottles;
+with Draughts, Bottles, GPIO;
 
 package body Pump_CSV is
 
@@ -23,14 +23,14 @@ package body Pump_CSV is
     function ParseDraughtCSV (Content : String) return Draughts.Draught is
         First : Integer := Content'First;
         Next : Integer := CSVNextElement(Content, First);
-        GPIO : Integer := Integer'Value(Content(First .. Next - 1));
-        Flow : Float := 0.0;
+        GPIO : Integer := GPIO.libsimpleio.Create(0, Integer'Value(Content(First .. Next - 1)), GPIO.Output);
+        Flow : Integer := 0;
         Bottle_Name : Bottles.String_Access := null;
         Remaining_Vol : Integer := 0;
     begin
         First := Next + 1;
         Next := CSVNextElement(Content, First);
-        Flow := Float'Value(Content(First .. Next - 1));
+        Flow := Integer'Value(Content(First .. Next - 1));
         First := Next + 1;
         Next := CSVNextElement(Content, First);
         Bottle_Name := new String'(Content(First .. Next - 1));
