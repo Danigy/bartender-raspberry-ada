@@ -125,6 +125,7 @@ package body Bartender_GUI is
 			end loop;
 			ret := (Name => name, Ingredients => ings);
 			recs := new RecipeArray'(recs.all & ret);
+			-- for logs and tests
 			Put("LOG: Added new recipe: ");
 			Put(ret.Name.all);
 			Put(", Ingredients are: ");
@@ -406,7 +407,6 @@ package body Bartender_GUI is
 		Connect(refillBottle, "activate", callbackRefillBottle'access);
 		Connect(replaceBottle, "activate", callbackReplaceBottle'access);
 		Connect(addRecipe, "activate", callbackAddRecipe'access);
-
 
 		-- setting up all recipes tab
 		Gtk_New(GUI.AllRecPage, "All Recipes");
