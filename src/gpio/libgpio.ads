@@ -22,7 +22,6 @@
 -- POSSIBILITY OF SUCH DAMAGE.
 
 PACKAGE libGPIO IS
-  PRAGMA Link_With("-lsimpleio");
 
   -- GPIO descriptor API
   LINE_INFO_KERNEL         : CONSTANT Integer := 16#0001#;
