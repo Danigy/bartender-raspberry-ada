@@ -1,8 +1,0 @@
-with "gtkada";
-
-project Test_gui is
-	for Source_Dirs use (".", "../recipe", "../bottle");
-	for Object_Dir use ".";
-	for Main use ("test_gui.adb");
-end Test_gui;
-

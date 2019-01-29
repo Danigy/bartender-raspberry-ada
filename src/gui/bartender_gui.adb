@@ -60,27 +60,18 @@ package body Bartender_GUI is
 	end;
 
 	function ReadRecipes return RecipeArrAccess is
-		ret : RecipeArrAccess;
+		ret 	: RecipeArrAccess;
+		list	: Recipe_lists.Recipe_List;
+		iter	: Recipe_lists.Available_Recipe_Access;
 	begin
-		-- TODO call Coco's function to read from CSV
-		ret := New RecipeArray'(
-			(Name => new String'("Whiskey Coca"),
-			 Ingredients => new Recipes.Ingredients_Array'(
-				(Name => new String'("Whiskey"), Vol => 200), 
-				(Name => new String'("Coca"), Vol => 300))), 
-			(Name => new String'("Vodka Redbull"),
-			 Ingredients => new Recipes.Ingredients_Array'(
-				(Name => new String'("Vodka"), Vol => 200),
-				(Name => new String'("Redbull"), Vol => 300))), 
-			(Name => new String'("Vodka Pomme"), 
-			 Ingredients => new Recipes.Ingredients_Array'(
-				(Name => new String'("Vodka"), Vol => 200),
-				(Name => new String'("Pomme"), Vol => 300))), 
-			(Name => new String'("Thé"), 
-			 Ingredients => new Recipes.Ingredients_Array'(
-				(Name => new String'("Whiskey"), Vol => 200),
-				(Name => new String'("Vodka"), Vol => 300)))
-		);
+		list := Recipe_CSV.ReadCSV("test_gui.csv");
+		ret := new RecipeArray(1 .. list.Length);
+
+		iter := list.Tail;
+		for i in 1 .. list.Length loop
+			ret(i) := iter.all.Cocktail;
+			iter := iter.all.Next;
+		end loop;
 		return ret;
 	end; 
 
@@ -146,6 +137,7 @@ package body Bartender_GUI is
 			Put_Line("");
 			DumpRecipeArrAccess(recs);
 			UpdateAllRecButts;
+			--Recipe_CSV_Writer.Add_To_CSV("test_gui.csv", ret);
 		else
 			Put_Line("Cancel Add recipe");
 		end if;
