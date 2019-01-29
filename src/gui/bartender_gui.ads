@@ -22,6 +22,9 @@ with Gtk.Main;			use Gtk.Main;
 with Gtk.Label;			use Gtk.Label;
 
 with Recipes;			use Recipes;
+with Recipe_lists;		use Recipe_lists;
+with Recipe_CSV;		use Recipe_CSV;
+with Recipe_CSV_Writer;		use Recipe_CSV_Writer;
 with Bottles;			use Bottles;
 with Bartender_Utils;		use Bartender_Utils;
 
