@@ -125,7 +125,6 @@ package body Bartender_GUI is
 			end loop;
 			ret := (Name => name, Ingredients => ings);
 			recs := new RecipeArray'(recs.all & ret);
-			-- for logs and tests
 			Put("LOG: Added new recipe: ");
 			Put(ret.Name.all);
 			Put(", Ingredients are: ");
