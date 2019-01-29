@@ -17,7 +17,9 @@ with Gtk.Dialog;		use Gtk.Dialog ;
 with Gtk.Message_Dialog;	use Gtk.Message_Dialog ;
 with Gtk.About_Dialog;		use Gtk.About_Dialog ;
 with Gtk.GEntry;		use Gtk.GEntry;
+with Gtk.Notebook;		use Gtk.Notebook;
 with Gtk.Main;			use Gtk.Main;
+with Gtk.Label;			use Gtk.Label;
 
 with Recipes;			use Recipes;
 with Bottles;			use Bottles;
@@ -32,26 +34,55 @@ package Bartender_GUI is
 	package ButtonHandler is new Gtk.Handlers.User_Callback(Gtk_Button_Record, Recipes.Recipe);
 	use ButtonHandler;
 
+	type GEntryArray is array(Positive range<>) of Gtk_GEntry;
+	type GEntryArrAccess is access GEntryArray;
+
 	type StringAccess is access all String;
 
 	subtype Positive is Integer range 0 .. Integer'Last;
 
-	type Button is record
-		Button : Gtk_Button;
-		Rec : Recipes.Recipe;
+	type RecButton is record
+		Button	: Gtk_Button;
+		Rec 	: Recipes.Recipe;
 	end record;
 
-	type ButtonArray is array(Positive range <>) of Button;
-	type ButtArrAccess is access ButtonArray;
+	type BotButton is record
+		Button 	: Gtk_Button;
+		Bot	: Bottles.Bottle;
+	end record;
+
+	type RecButtonArray is array(Positive range <>) of RecButton;
+	type RecButtArrAccess is access RecButtonArray;
+	type BotButtonArray is array(Positive range <>) of BotButton;
+	type BotButtArrAccess is access BotButtonArray;
 
 	type BartenderGUI is record
-		Window 		: Gtk_Window;
-		MainBox 	: Gtk_VBox;
-		MenuBar 	: Gtk_Menu_bar;
-		Scroll 		: Gtk_Scrolled_Window;
-		RecipeBox 	: Gtk_VBox;
-		RecipesButts 	: ButtArrAccess;
-		Bottles		: BottleArrAccess;
+		Window 			: Gtk_Window;
+		MainBox 		: Gtk_VBox;
+		MenuBar 		: Gtk_Menu_bar;
+
+		Tabs			: Gtk_Notebook;
+
+		-- objects for tab listing all recipes
+		AllRecPage		: Gtk_Label;
+		AllRecBox		: Gtk_VBox;
+		AllRecScroll 		: Gtk_Scrolled_Window;
+		AllRecButts 		: RecButtArrAccess;
+
+		-- objetcs for tab listing bottles
+		BottlePage		: Gtk_Label;
+		BottleBox		: Gtk_VBox;
+		BottleButts		: BotButtArrAccess;
+		BottleScroll		: Gtk_Scrolled_Window;
+
+		-- objects for tab listing available recipes
+		AvailableRecPage	: Gtk_Label;
+		AvailableRecBox 	: Gtk_VBox;
+		AvailableRecButts	: RecButtArrAccess;
+		AvailableRecScroll	: Gtk_Scrolled_Window;
+
+		--RecipeBox 		: Gtk_VBox;
+		--Bottles			: BottleArrAccess;
 	end record;
 
 	type GUIAccess is access BartenderGUI;
