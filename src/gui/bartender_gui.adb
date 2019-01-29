@@ -20,6 +20,27 @@ package body Bartender_GUI is
 		return null;
 	end;
 
+	procedure UpdateAllRecButts is
+		
+	begin
+		for i in GUI.AllRecButts'first .. GUI.AllRecButts'last loop
+			
+			Remove(GUI.AllRecBox, GUI.AllRecButts(i).Button);
+			
+		end loop;
+
+		GUI.AllRecButts := new RecButtonArray(recs'First..recs'Last);
+		for i in GUI.AllRecButts'First..GUI.AllRecButts'Last loop
+			Gtk_New(GUI.AllRecButts(i).Button, recs(i).Name.all);
+			GUI.AllRecButts(i).Rec := recs(i);
+			Connect (GUI.AllRecButts(i).Button, "clicked", callbackDoRecipe'access, recs(i));
+			GUI.AllRecBox.Pack_End(GUI.AllRecButts(i).Button);
+		end loop;
+		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
+
+		GUI.Window.Show_All;
+	end;
+
 	function ReadRecipes return RecipeArrAccess is
 		ret : RecipeArrAccess;
 	begin
@@ -86,17 +107,15 @@ package body Bartender_GUI is
 		dialog.Show_All;
 
 		if dialog.run = Gtk_Response_OK then
-			-- create recipe
 			for i in 1 .. nb * 2 loop
 				if i mod 2 = 0 then
 					ings((i / 2) + i mod 2).Vol := Integer'Value(Get_Text(EntryArr(i)));
 				else
 					ings((i / 2) + i mod 2).Name := new String'(Get_Text(EntryArr(i)));
 				end if;
-				ret := (Name => name, Ingredients => ings);
-				recs := new RecipeArray'(recs.all & ret);
 			end loop;
-			-- for logs and tests
+			ret := (Name => name, Ingredients => ings);
+			recs := new RecipeArray'(recs.all & ret);
 			Put("LOG: Added new recipe: ");
 			Put(ret.Name.all);
 			Put(", Ingredients are: ");
@@ -107,6 +126,8 @@ package body Bartender_GUI is
 				Put("ml; ");
 			end loop;
 			Put_Line("");
+			DumpRecipeArrAccess(recs);
+			UpdateAllRecButts;
 		else
 			Put_Line("Cancel Add recipe");
 		end if;

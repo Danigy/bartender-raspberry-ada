@@ -87,6 +87,8 @@ package Bartender_GUI is
 
 	type GUIAccess is access BartenderGUI;
 
+	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe);
+
 	procedure RunGUI;
 
 end Bartender_GUI;
