@@ -60,6 +60,98 @@ package body Bartender_GUI is
 		return ret;
 	end;
 
+	procedure callbackAddIngredients(from : access Gtk_Menu_Item_Record'Class; name : Recipes.String_Access; nb : Positive) is
+		dialog   : Gtk_Dialog;
+		btnOK    : Gtk_Button; pragma unreferenced(btnOK);
+		btnKO    : Gtk_Button; pragma unreferenced(btnKO);
+		EntryArr : GEntryArray(1..nb * 2);
+		ret	 : Recipes.Recipe;
+		box	 : Gtk_VBox;
+		ings	 : Ingredients_Access;
+	begin
+		ings := new Ingredients_Array(1 .. nb);
+		Gtk_New(dialog, Title => "Add Ingredients", Parent => Gtk_Window(Get_Toplevel(from)),
+			Flags => Use_Header_Bar_From_Settings(from));
+		dialog.Set_Parent(GUI.Window);
+		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
+		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
+
+		Gtk_New_VBox(box, Homogeneous => false);
+		for i in 1 .. nb * 2 loop
+			Gtk_New(EntryArr(i));
+			Pack_Start(box, EntryArr(i));
+		end loop;
+
+		Pack_Start(dialog.Get_Content_Area, box);
+		dialog.Show_All;
+
+		if dialog.run = Gtk_Response_OK then
+			-- create recipe
+			for i in 1 .. nb * 2 loop
+				if i mod 2 = 0 then
+					ings((i / 2) + i mod 2).Vol := Integer'Value(Get_Text(EntryArr(i)));
+				else
+					ings((i / 2) + i mod 2).Name := new String'(Get_Text(EntryArr(i)));
+				end if;
+				ret := (Name => name, Ingredients => ings);
+				recs := new RecipeArray'(recs.all & ret);
+			end loop;
+			-- for logs and tests
+			Put("LOG: Added new recipe: ");
+			Put(ret.Name.all);
+			Put(", Ingredients are: ");
+			for i in 1 .. nb loop
+				Put(ings(i).Name.all);
+				Put("=> ");
+				Put(ings(i).Vol'Image);
+				Put("ml; ");
+			end loop;
+			Put_Line("");
+		else
+			Put_Line("Cancel Add recipe");
+		end if;
+		dialog.destroy;
+	end;
+
+	procedure callbackAddRecipe(from : access Gtk_Menu_Item_Record'Class) is
+		dialog 		: Gtk_Dialog;
+		box		: Gtk_VBox;
+		btnOK		: Gtk_Button; pragma unreferenced(btnOK);
+		btnKO		: Gtk_Button; pragma unreferenced(btnKO);
+		name		: Gtk_Gentry;
+		nbentry		: Gtk_Gentry;
+		nbing		: Integer;
+	begin
+		Gtk_New(dialog, Title => "Add Recipe", Parent => Gtk_Window(Get_Toplevel(from)),
+			Flags => Use_Header_Bar_From_Settings(from));
+		dialog.Set_Parent(GUI.Window);
+		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
+		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
+
+		Gtk_New_VBox(box, Homogeneous => false);
+		Gtk_New(name);
+		Gtk_New(nbentry);
+		Pack_Start(box, name);
+		Pack_Start(box, nbentry);
+		Pack_Start(dialog.Get_Content_Area, box);
+		
+		dialog.Show_All;
+
+		if dialog.run = Gtk_Response_OK then
+			
+			nbing := Integer'Value(Get_Text(nbentry));
+			if nbing > 0 then
+				callbackAddIngredients(from, new String'(Get_Text(name)), nbing);
+			else
+				Put_Line("Bad nb of ingredients");
+			end if;
+		else
+			Put_Line("Cancel Add recipe");
+		end if;
+		dialog.destroy;
+	end;
+
+
 	procedure callbackReplaceBottle(from : access Gtk_Menu_Item_Record'Class) is
 		dialog 	: Gtk_Dialog;
 		box	: Gtk_VBox;
@@ -245,7 +337,7 @@ package body Bartender_GUI is
 		refillBottle	: Gtk_Menu_Item;
 		addBottle	: Gtk_Menu_Item;
 		addRecipe 	: Gtk_Menu_Item;
-		butts 		: ButtonArray(recs'First..recs'Last);
+		--GUI.AllRecButts 	: ButtonArray(recs'First..recs'Last);
 		title : String := "Ada Bartender";
 	begin
 
@@ -281,24 +373,47 @@ package body Bartender_GUI is
 		Connect(addBottle, "activate", callbackAddBottle'access); 
 		Connect(refillBottle, "activate", callbackRefillBottle'access);
 		Connect(replaceBottle, "activate", callbackReplaceBottle'access);
+		Connect(addRecipe, "activate", callbackAddRecipe'access);
 
-		-- setting up buttons for tests
-		Gtk_New_VBox(GUI.RecipeBox);
-		for i in butts'First..butts'Last loop
-			Gtk_New(butts(i).Button, recs(i).Name.all);
-			butts(i).Rec := recs(i);
-			Connect (butts(i).Button, "clicked", callbackDoRecipe'access, recs(i));
-			GUI.RecipeBox.Pack_End(butts(i).Button);
+
+		-- setting up all recipes tab
+		Gtk_New(GUI.AllRecPage, "All Recipes");
+		Gtk_New_VBox(GUI.AllRecBox);
+		GUI.AllRecButts := new RecButtonArray(recs'First..recs'Last);
+		for i in GUI.AllRecButts'First..GUI.AllRecButts'Last loop
+			Gtk_New(GUI.AllRecButts(i).Button, recs(i).Name.all);
+			GUI.AllRecButts(i).Rec := recs(i);
+			Connect (GUI.AllRecButts(i).Button, "clicked", callbackDoRecipe'access, recs(i));
+			GUI.AllRecBox.Pack_End(GUI.AllRecButts(i).Button);
 		end loop;
+		Gtk_New(GUI.AllRecScroll);
+		GUI.AllRecScroll.Set_Policy(Policy_Automatic, Policy_Automatic);
+		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
 
-		-- setting up Scroll
-		Gtk_New(GUI.Scroll);
-		GUI.Scroll.Set_Policy(Policy_Automatic, Policy_Automatic);
-		GUI.Scroll.add_with_viewport(GUI.RecipeBox);
-		GUI.MainBox.pack_start(GUI.Scroll, Expand => true, Fill => true);
+		-- setting up bottles tab
+		Gtk_New(GUI.BottlePage, "Bottles");
+		Gtk_New_VBox(GUI.BottleBox);
+		GUI.BottleButts := new BotButtonArray(bots'first.. bots'last);
+		for i in bots'first .. bots'last loop
+			Gtk_New(GUI.BottleButts(i).Button, bots(i).Name.all);
+			GUI.BottleButts(i).Bot := bots(i);
+			-- no connection needed
+			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
+		end loop;
+		Gtk_New(GUI.BottleScroll);
+		GUI.BottleScroll.Set_Policy(Policy_Automatic, Policy_Automatic);
+		GUI.BottleScroll.add_with_viewport(GUI.BottleBox);
+
+		-- setting up notebook / tabs
+		Gtk_New(GUI.Tabs);
+		GUI.Tabs.Append_Page(GUI.AllRecScroll, GUI.AllRecPage);
+		GUI.Tabs.Append_Page(GUI.BottleScroll, GUI.BottlePage);
+
+		-- setting up main box
+		GUI.MainBox.pack_start(GUI.Tabs, Expand => true, Fill => true);
 
 		GUI.Window.Add(GUI.MainBox);
-		GUI.RecipesButts := new ButtonArray'(butts);
+		--GUI.AllRecButts := new ButtonArray'(GUI.AllRecButts);
 
 		DumpBottleArrAccess(bots);
 	end InitGUI;
