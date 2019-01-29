@@ -24,13 +24,13 @@ package body Pump_CSV is
         First : Integer := Content'First;
         Next : Integer := CSVNextElement(Content, First);
         GPIO : Integer := GPIO.libsimpleio.Create(0, Integer'Value(Content(First .. Next - 1)), GPIO.Output);
-        Flow : Float := 0.0;
+        Flow : Integer := 0;
         Bottle_Name : Bottles.String_Access := null;
         Remaining_Vol : Integer := 0;
     begin
         First := Next + 1;
         Next := CSVNextElement(Content, First);
-        Flow := Float'Value(Content(First .. Next - 1));
+        Flow := Integer'Value(Content(First .. Next - 1));
         First := Next + 1;
         Next := CSVNextElement(Content, First);
         Bottle_Name := new String'(Content(First .. Next - 1));
