@@ -167,7 +167,6 @@ package body Bartender_GUI is
 		dialog.destroy;
 	end;
 
-
 	procedure callbackReplaceBottle(from : access Gtk_Menu_Item_Record'Class) is
 		dialog 	: Gtk_Dialog;
 		box	: Gtk_VBox;
