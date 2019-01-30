@@ -94,8 +94,6 @@ package Bartender_GUI is
 		AvailableRecButts	: RecButtArrAccess;
 		AvailableRecScroll	: Gtk_Scrolled_Window;
 
-		--RecipeBox 		: Gtk_VBox;
-		--Bottles			: BottleArrAccess;
 	end record;
 
 	type GUIAccess is access BartenderGUI;
