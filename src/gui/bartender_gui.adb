@@ -90,6 +90,11 @@ package body Bartender_GUI is
 		return ret;
 	end;
 
+	procedure callbackQuit(from : access Gtk_Menu_Item_Record'Class) is
+	begin
+		Main_Quit;
+	end;
+
 	procedure callbackAddIngredients(from : access Gtk_Menu_Item_Record'Class; name : Recipes.String_Access; nb : Positive) is
 		dialog   : Gtk_Dialog;
 		btnOK    : Gtk_Button; pragma unreferenced(btnOK);
@@ -137,7 +142,7 @@ package body Bartender_GUI is
 			Put_Line("");
 			DumpRecipeArrAccess(recs);
 			UpdateAllRecButts;
-			--Recipe_CSV_Writer.Add_To_CSV("test_gui.csv", ret);
+			Recipe_CSV_Writer.Add_To_CSV("test_gui.csv", ret);
 		else
 			Put_Line("Cancel Add recipe");
 		end if;
@@ -364,6 +369,7 @@ package body Bartender_GUI is
 
 	procedure InitGUI is
 		menuBottle 	: Gtk_Menu;
+		quit		: Gtk_Menu_Item;
 		bottle		: Gtk_Menu_Item;
 		replaceBottle	: Gtk_Menu_Item;
 		refillBottle	: Gtk_Menu_Item;
@@ -390,6 +396,7 @@ package body Bartender_GUI is
 		GUI.MainBox.pack_start(GUI.MenuBar, Expand => false, Fill => true);
 
 		-- setting up Menu Bar items
+		Gtk_New(quit, "Quit");
 		Gtk_New(bottle, "Bottles");
 		Gtk_New(menuBottle);
 		bottle.Set_Submenu(menuBottle);
@@ -402,10 +409,12 @@ package body Bartender_GUI is
 		menuBottle.append(addBottle);
 		GUI.MenuBar.Append(addRecipe);
 		GUI.MenuBar.Append(bottle);	
+		GUI.MenuBar.Append(quit);
 		Connect(addBottle, "activate", callbackAddBottle'access); 
 		Connect(refillBottle, "activate", callbackRefillBottle'access);
 		Connect(replaceBottle, "activate", callbackReplaceBottle'access);
 		Connect(addRecipe, "activate", callbackAddRecipe'access);
+		Connect(quit, "activate", callbackQuit'access);
 
 
 		-- setting up all recipes tab
