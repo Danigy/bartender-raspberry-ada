@@ -1,6 +1,7 @@
 with Ada.Text_IO;		use Ada.Text_IO;
 with Recipes;			use Recipes;
 with Bottles;			use Bottles;
+with Draughts;			use Draughts;
 
 package Bartender_Utils is
 
@@ -10,13 +11,9 @@ package Bartender_Utils is
 	type BottleArray is array(Positive range <>) of Bottles.Bottle;
 	type BottleArrAccess is access all BottleArray;
 
-	-- I can pass only 1 object to a callback function
-	type DoRecipeRecord is record
-		Rec : Recipes.Recipe;
-		Bottles : BottleArrAccess;
-	end record;
+	type DraughtArrAccess is access all Draught_Array;
 
-	procedure DumpBottleArrAccess(bottles : BottleArrAccess);
+	procedure DumpBottleArrAccess(bottles : DraughtArrAccess);
 	procedure DumpRecipeArrAccess(recipes : RecipeArrAccess);
 
 end Bartender_Utils;

@@ -25,6 +25,9 @@ with Recipes;			use Recipes;
 with Recipe_lists;		use Recipe_lists;
 with Recipe_CSV;		use Recipe_CSV;
 with Recipe_CSV_Writer;		use Recipe_CSV_Writer;
+with Pumps;			use Pumps;
+with Pump_CSV;			use Pump_CSV;
+with Draughts;			use Draughts;
 with Bottles;			use Bottles;
 with Bartender_Utils;		use Bartender_Utils;
 
@@ -54,10 +57,17 @@ package Bartender_GUI is
 		Bot	: Bottles.Bottle;
 	end record;
 
+	type DraughtButton is record
+		Button	: Gtk_Button;
+		Draught	: Draughts.Draught;
+	end record;
+
 	type RecButtonArray is array(Positive range <>) of RecButton;
 	type RecButtArrAccess is access RecButtonArray;
 	type BotButtonArray is array(Positive range <>) of BotButton;
 	type BotButtArrAccess is access BotButtonArray;
+	type DraughtButtonArray is array(Positive range<>) of DraughtButton;
+	type DraughtButtArrAccess is access DraughtButtonArray;
 
 	type BartenderGUI is record
 		Window 			: Gtk_Window;
@@ -75,7 +85,7 @@ package Bartender_GUI is
 		-- objetcs for tab listing bottles
 		BottlePage		: Gtk_Label;
 		BottleBox		: Gtk_VBox;
-		BottleButts		: BotButtArrAccess;
+		BottleButts		: DraughtButtArrAccess;
 		BottleScroll		: Gtk_Scrolled_Window;
 
 		-- objects for tab listing available recipes
