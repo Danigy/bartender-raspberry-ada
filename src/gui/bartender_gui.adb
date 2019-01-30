@@ -1,18 +1,17 @@
 package body Bartender_GUI is
-	GUI : GUIAccess;
-	bots : BottleArrAccess;
+	GUI 	: GUIAccess;
+	draugs	: DraughtArrAccess;
 	recs	: RecipeArrAccess;
 
-	-- Hardcoded for tests
 	function CheckAvailableRecipe(rec : Recipes.Recipe) return Recipes.String_Access is
 		found : Boolean := false;
 	begin
 		for i in rec.Ingredients'First .. rec.Ingredients'Last loop
 			found := false;
-			for j in bots'First .. bots'Last loop
-				if rec.Ingredients(i).Name.all = bots(j).Name.all then
+			for j in draugs'First .. draugs'Last loop
+				if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
 					found := true;
-				elsif not found and rec.Ingredients(i).Name.all /= bots(j).Name.all and j = bots'Last then
+				elsif not found and rec.Ingredients(i).Name.all /= draugs(j).Bottle.Name.all and j = draugs'Last then
 					return rec.Ingredients(i).Name;
 				end if;
 			end loop;
@@ -21,14 +20,10 @@ package body Bartender_GUI is
 	end;
 
 	procedure UpdateAllRecButts is
-		
 	begin
 		for i in GUI.AllRecButts'first .. GUI.AllRecButts'last loop
-			
 			Remove(GUI.AllRecBox, GUI.AllRecButts(i).Button);
-			
 		end loop;
-
 		GUI.AllRecButts := new RecButtonArray(recs'First..recs'Last);
 		for i in GUI.AllRecButts'First..GUI.AllRecButts'Last loop
 			Gtk_New(GUI.AllRecButts(i).Button, recs(i).Name.all);
@@ -37,25 +32,21 @@ package body Bartender_GUI is
 			GUI.AllRecBox.Pack_End(GUI.AllRecButts(i).Button);
 		end loop;
 		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
-
 		GUI.Window.Show_All;
 	end;
 
 	procedure UpdateBottleButts is
-		
 	begin
 		for i in GUI.BottleButts'first .. GUI.BottleButts'last loop
 			Remove(GUI.BottleBox, GUI.BottleButts(i).Button);
 		end loop;
-
-		GUI.BottleButts := new BotButtonArray(bots'First..bots'Last);
+		GUI.BottleButts := new DraughtButtonArray(draugs'First..draugs'Last);
 		for i in GUI.BottleButts'First..GUI.BottleButts'Last loop
-			Gtk_New(GUI.BottleButts(i).Button, bots(i).Name.all);
-			GUI.BottleButts(i).Bot := bots(i);
+			Gtk_New(GUI.BottleButts(i).Button, draugs(i).Bottle.Name.all);
+			GUI.BottleButts(i).Draught := draugs(i);
 			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
 		end loop;
 		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
-
 		GUI.Window.Show_All;
 	end;
 
@@ -64,9 +55,8 @@ package body Bartender_GUI is
 		list	: Recipe_lists.Recipe_List;
 		iter	: Recipe_lists.Available_Recipe_Access;
 	begin
-		list := Recipe_CSV.ReadCSV("test_gui.csv");
+		list := Recipe_CSV.ReadCSV("recipes.csv");
 		ret := new RecipeArray(1 .. list.Length);
-
 		iter := list.Tail;
 		for i in 1 .. list.Length loop
 			ret(i) := iter.all.Cocktail;
@@ -75,19 +65,9 @@ package body Bartender_GUI is
 		return ret;
 	end; 
 
-	-- hardcoded for tests
-	function ReadBottles return BottleArrAccess is
-		ret : BottleArrAccess;
+	function ReadBottles return DraughtArrAccess is
 	begin
-		-- TODO call Coco's function to read from CSV
-		ret := new BottleArray'(
-			(Name => new String'("Whiskey"), Remaining_Vol => 750),
-			(Name => new String'("Vodka"), Remaining_Vol => 750),
-			(Name => new String'("Redbull"), Remaining_Vol => 1000),
-			(Name => new String'("Pomme"), Remaining_Vol => 1500),
-			(Name => new String'("Coca"), Remaining_Vol => 1500)
-		);
-		return ret;
+		return new Draught_Array'(Pump_CSV.ReadCSV("pumps.csv"));
 	end;
 
 	procedure callbackQuit(from : access Gtk_Menu_Item_Record'Class) is
@@ -142,7 +122,7 @@ package body Bartender_GUI is
 			Put_Line("");
 			DumpRecipeArrAccess(recs);
 			UpdateAllRecButts;
-			Recipe_CSV_Writer.Add_To_CSV("test_gui.csv", ret);
+			Recipe_CSV_Writer.Add_To_CSV("recipes.csv", ret);
 		else
 			Put_Line("Cancel Add recipe");
 		end if;
@@ -208,8 +188,8 @@ package body Bartender_GUI is
 		Gtk_New(combo);
 		Gtk_New(name);
 		Gtk_New(vol);
-		for i in bots'first .. bots'last loop
-			Append_Text(combo, bots(i).Name.all);
+		for i in draugs'first .. draugs'last loop
+			Append_Text(combo, draugs(i).Bottle.Name.all);
 		end loop;
 		Pack_Start(box, combo, Expand => false);
 		Pack_Start(box, name);
@@ -221,11 +201,11 @@ package body Bartender_GUI is
 		if dialog.run = GTK_Response_OK then
 			idx := Integer(Get_Active(combo)) + 1;
 			Put("LOG: Replacing bottle of ");
-			Put(bots(idx).Name.all);
+			Put(draugs(idx).Bottle.Name.all);
 			Put(" by a Bottle of ");
-			bots(idx).Name := new String'(Get_Text(name));
-			bots(idx).Remaining_Vol := Integer'Value(Get_Text(vol));
-			Put_Line(bots(idx).Name.all);
+			draugs(idx).Bottle.Name := new String'(Get_Text(name));
+			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
+			Put_Line(draugs(idx).Bottle.Name.all);
 		else
 			Put_Line("Cancel bottle replacement");
 		end if;
@@ -251,8 +231,8 @@ package body Bartender_GUI is
 		Gtk_New_VBox(box, Homogeneous => false);
 		Gtk_New(combo);
 		Gtk_New(vol);
-		for i in bots'first .. bots'last loop
-			Append_Text(combo, bots(i).Name.all);
+		for i in draugs'first .. draugs'last loop
+			Append_Text(combo, draugs(i).Bottle.Name.all);
 		end loop;
 		Pack_Start(box, combo, Expand => false);
 		Pack_Start(box, vol);
@@ -262,58 +242,16 @@ package body Bartender_GUI is
 
 		if dialog.run = GTK_Response_OK then
 			idx := Integer(Get_Active(combo)) + 1;
-			bots(idx).Remaining_Vol := Integer'Value(Get_Text(vol));
+			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
 			Put("LOG: Refilling bottle of ");
-			Put(bots(idx).Name.all);
+			Put(draugs(idx).Bottle.Name.all);
 			Put(", new volume is ");
-			Put(bots(idx).Remaining_Vol'Image);
+			Put(draugs(idx).Bottle.Remaining_Vol'Image);
 			Put("ml");
 		else
 			Put_Line("LOG: Cancel bottle refill");
 		end if;
 		dialog.destroy;
-	end;
-
-	procedure callbackAddBottle(from : access Gtk_Menu_Item_Record'Class) is 	
-		dialog 	: Gtk_Dialog;
-		box	: Gtk_VBox;
-		btnOK	: Gtk_Button; pragma unreferenced(btnOK);
-		btnKO	: Gtk_Button; pragma unreferenced(btnKO);
-		name	: Gtk_Gentry;
-		vol	: Gtk_GEntry;
-		bot 	: Bottles.Bottle;
-	begin
-		Put_Line("LOG: adding bottle");
-		Gtk_New(dialog, Title => "Add New Bottle", Parent => Gtk_Window(Get_Toplevel(from)),
-			Flags => Use_Header_Bar_From_Settings(from));
-		dialog.Set_Parent(GUI.Window);
-		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
-		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
-
-		Gtk_New_VBox(box, Homogeneous => false);
-		Gtk_New(name);
-		Gtk_New(vol);
-		Pack_Start(box, name);
-		Pack_Start(box, vol);
-		Pack_Start(dialog.Get_Content_Area, box);
-
-		dialog.Show_All;
-
-		if dialog.run = GTK_Response_OK then
-			bot := (Name => new String'(Get_Text(name)),
-				Remaining_Vol => Integer'Value(Get_Text(vol)));
-			bots := new BottleArray'(bots.all & bot);
-			Put("LOG: Added new bottle of ");
-			Put(bot.Name.all);
-			Put(", Vol is ");
-			Put(bot.Remaining_Vol'Image);
-			Put_Line("ml");
-		else
-			Put_Line("LOG Cancel bottle refill");
-		end if;
-		dialog.destroy;
-		DumpBottleArrAccess(bots);
-		UpdateBottleButts;
 	end;
 
 	procedure DoRecipeErrorVolume(rec : Recipes.Recipe; bot : Bottles.Bottle) is
@@ -333,7 +271,6 @@ package body Bartender_GUI is
 		Put(" but the remaining volume is ");
 		Put(bot.Remaining_Vol'Image);
 		Put_Line("ml");
-		--Put_Line("ERROR: remaining volume is not sufficient");
 	end;
 
 	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe) is
@@ -343,17 +280,17 @@ package body Bartender_GUI is
 		if check = null then
 			Put("LOG: preparing "); Put_Line(rec.name.all);
 			for i in rec.Ingredients'First .. rec.Ingredients'Last loop
-				for j in bots'First .. bots'Last loop
-					if rec.Ingredients(i).Name.all = bots(j).name.all then
-						if rec.Ingredients(i).Vol < bots(j).Remaining_Vol then
+				for j in draugs'First .. draugs'Last loop
+					if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
+						if rec.Ingredients(i).Vol < Draugs(j).Bottle.Remaining_Vol then
 							-- TODO call to the good GPIO / pump
 							Put("Pouring ");
 							Put(rec.Ingredients(i).Name.all);
 							Put(" from bottle of ");
-							Put_Line(bots(j).Name.all);
-							Bottles.RemoveRemainingVolume(bots(j), rec.Ingredients(i).Vol);
+							Put_Line(draugs(j).Bottle.Name.all);
+							Bottles.RemoveRemainingVolume(draugs(j).Bottle, rec.Ingredients(i).Vol);
 						else
-							DoRecipeErrorVolume(rec, bots(j));
+							DoRecipeErrorVolume(rec, draugs(j).Bottle);
 						end if;
 					end if;
 				end loop;
@@ -364,7 +301,7 @@ package body Bartender_GUI is
 			Put(": Missing bottle of ");
 			Put_Line(check.all);
 		end if;
-		DumpBottleArrAccess(bots);
+		DumpBottleArrAccess(draugs);
 	end;
 
 	procedure InitGUI is
@@ -373,9 +310,7 @@ package body Bartender_GUI is
 		bottle		: Gtk_Menu_Item;
 		replaceBottle	: Gtk_Menu_Item;
 		refillBottle	: Gtk_Menu_Item;
-		addBottle	: Gtk_Menu_Item;
 		addRecipe 	: Gtk_Menu_Item;
-		--GUI.AllRecButts 	: ButtonArray(recs'First..recs'Last);
 		title : String := "Ada Bartender";
 	begin
 
@@ -402,15 +337,12 @@ package body Bartender_GUI is
 		bottle.Set_Submenu(menuBottle);
 		Gtk_New(refillBottle, "Refill Bottle");
 		Gtk_New(replaceBottle, "Replace Bottle by Another");
-		Gtk_New(addBottle, "Add Bottle");
 		Gtk_New(addRecipe, "Add Recipe");
 		menuBottle.append(replaceBottle);
 		menuBottle.append(refillBottle);
-		menuBottle.append(addBottle);
 		GUI.MenuBar.Append(addRecipe);
 		GUI.MenuBar.Append(bottle);	
 		GUI.MenuBar.Append(quit);
-		Connect(addBottle, "activate", callbackAddBottle'access); 
 		Connect(refillBottle, "activate", callbackRefillBottle'access);
 		Connect(replaceBottle, "activate", callbackReplaceBottle'access);
 		Connect(addRecipe, "activate", callbackAddRecipe'access);
@@ -434,11 +366,10 @@ package body Bartender_GUI is
 		-- setting up bottles tab
 		Gtk_New(GUI.BottlePage, "Bottles");
 		Gtk_New_VBox(GUI.BottleBox);
-		GUI.BottleButts := new BotButtonArray(bots'first.. bots'last);
-		for i in bots'first .. bots'last loop
-			Gtk_New(GUI.BottleButts(i).Button, bots(i).Name.all);
-			GUI.BottleButts(i).Bot := bots(i);
-			-- no connection needed
+		GUI.BottleButts := new DraughtButtonArray(draugs'first.. draugs'last);
+		for i in draugs'first .. draugs'last loop
+			Gtk_New(GUI.BottleButts(i).Button, draugs(i).Bottle.Name.all);
+			GUI.BottleButts(i).Draught := draugs(i);
 			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
 		end loop;
 		Gtk_New(GUI.BottleScroll);
@@ -452,17 +383,15 @@ package body Bartender_GUI is
 
 		-- setting up main box
 		GUI.MainBox.pack_start(GUI.Tabs, Expand => true, Fill => true);
-
 		GUI.Window.Add(GUI.MainBox);
-		--GUI.AllRecButts := new ButtonArray'(GUI.AllRecButts);
+		DumpBottleArrAccess(draugs);
 
-		DumpBottleArrAccess(bots);
 	end InitGUI;
 
 	procedure RunGUI is
 	begin
 		recs := ReadRecipes;
-		bots := ReadBottles;
+		draugs := ReadBottles;
 
 		Gtk.Main.Init;
 		InitGUI;

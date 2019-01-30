@@ -1,12 +1,12 @@
 package body Bartender_Utils is
 
-	procedure DumpBottleArrAccess(bottles : BottleArrAccess) is
+	procedure DumpBottleArrAccess(bottles : DraughtArrAccess) is
 	begin
 		Put_Line("BOTTLES DUMP :");
 		Put_Line("==============");
 		for i in bottles'First .. bottles'Last loop
-			Put(bottles(i).Name.all); Put(": "); 
-			Put(bottles(i).Remaining_Vol'Image); 
+			Put(bottles(i).Bottle.Name.all); Put(": "); 
+			Put(bottles(i).Bottle.Remaining_Vol'Image); 
 			Put_Line("ml");
 		end loop;
 		Put_Line("");
