@@ -1,7 +1,6 @@
 
-project Test_CSV is
+project Test_Writer is
     for Source_Dirs use (".", "../../src/recipe", "../../src/recipe_csv");
     for Object_Dir use ".";
-    for Main use ("test_csv.adb");
-end Test_CSV;
-
+    for Main use ("test_writer.adb");
+end Test_Writer;
