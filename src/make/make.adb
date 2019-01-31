@@ -3,6 +3,8 @@ WITH Ada.Strings; USE Ada.Strings;
 WITH GPIO.libsimpleio; USE GPIO.libsimpleio;
 WITH Pumps; USE Pumps;
 WITH Recipes; USE Recipes;
+WITH Bottles; USE Bottles;
+WITH Draughts;	USE Draughts;
 
 PACKAGE BODY MAKE IS
        
@@ -32,7 +34,7 @@ END Schedule;
 
 PROCEDURE AddJob
 	(Ing 	: in Ingredient;
-	 Mach	: in Draught_Array;
+	 Mach	: in out Draught_Array;
 	 J 	: in out JobsAccess) IS
 	
 	Ret : Job;
@@ -41,6 +43,7 @@ BEGIN
 	for I in Mach'Range loop
 		if Ing.Name.all = Mach(I).Bottle.Name.all then
 			Ret := (Mach(I).Pump, GetTime(Mach(I).Pump, Ing.Vol));
+			RemoveRemainingVolume(Mach(I).Bottle, Ing.Vol);
 		end if;
 	end loop;
 	Put("Add Job of ");
@@ -55,7 +58,7 @@ END AddJob;
 
 FUNCTION GetJobs
 	(Rec	: Recipe; 
-	 Mach	: Draught_Array)
+	 Mach	: in out Draught_Array)
 	RETURN JobsAccess IS
 
 	J : JobsAccess := null;
@@ -68,7 +71,7 @@ END GetJobs;
 
 FUNCTION Groom
 	(Rec	: Recipe;
-	 Mach	: Draught_Array)
+	 Mach	: in out Draught_Array)
 	 RETURN JobsAccess IS
 
 	 J : JobsAccess;

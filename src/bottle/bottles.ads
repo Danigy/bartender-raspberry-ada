@@ -6,11 +6,11 @@ package Bottles is
     type Bottle is tagged record
         Name : String_Access;
         Remaining_Vol : Volume; -- Remaining Volume in the bottle in ml
-    end record
-    with Dynamic_Predicate => Remaining_Vol > 0;
+    end record;
+    -- with Dynamic_Predicate => This.Remaining_Vol > 0;
 
-    procedure RemoveRemainingVolume (This: in out Bottle; Vol : Positive)
-    with Pre => This.Remaining_Vol > Vol,
-         Post => This.Remaining_vol >= 0 and then This.Remaining_Vol'Old = This.Remaining_Vol + Vol;
+    procedure RemoveRemainingVolume (bot: in out Bottle; Vol : Positive);
+    --with Pre => bot.Remaining_Vol > Vol,
+    --     Post => bot.Remaining_vol >= 0 and then bot'old.Remaining_Vol - Vol > 0;
 
 end Bottles;

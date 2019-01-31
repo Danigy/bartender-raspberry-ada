@@ -16,6 +16,7 @@ package body Pump_CSV_Writer is
                 & Tap(I).Bottle.Name.all & ","
                 & Integer'Image(Tap(I).Bottle.Remaining_Vol));
         end loop;
+	Close(File);
     end Write_CSV;
 
 end Pump_CSV_Writer;

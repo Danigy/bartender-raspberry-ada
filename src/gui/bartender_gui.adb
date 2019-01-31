@@ -263,29 +263,11 @@ package body Bartender_GUI is
 			Put(Integer'Image(draugs(idx).Bottle.Remaining_Vol));
 			Put_Line("ml");
 			Put("");
+			UpdateBottleButts;
 		else
 			Put_Line("LOG: Cancel bottle refill");
 		end if;
 		dialog.destroy;
-	end;
-
-	procedure DoRecipeErrorVolume(rec : Recipes.Recipe; bot : Bottles.Bottle) is
-		ing : Recipes.Ingredient;
-	begin
-		for i in rec.Ingredients'First .. rec.Ingredients'Last loop
-			if rec.Ingredients(i).Name.all = bot.Name.all then
-				ing := rec.Ingredients(i);
-			end if;
-		end loop;
-		Put("Error: ");
-		Put(rec.Name.all);
-		Put(" needs ");
-		Put(Integer'Image(ing.Vol));
-		Put("ml of ");
-		Put(ing.Name.all);
-		Put(" but the remaining volume is ");
-		Put(Integer'Image(bot.Remaining_Vol));
-		Put_Line("ml");
 	end;
 
 	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe) is
@@ -298,6 +280,7 @@ package body Bartender_GUI is
 			J := Make.Groom(rec, draugs.all);
 			if MakeCocktail(J) then
 				Put_Line("Done");
+				UpdateBottleButts;
 			else
 				Put_Line("Make Cocktail failed");
 			end if;
