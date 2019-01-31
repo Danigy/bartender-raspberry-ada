@@ -7,12 +7,26 @@ package body Recipe_CSV is
     function ReadCSV (Filename : String) return Recipe_List is
         File : File_Type;
         RecipeList : Recipe_List := Recipe_Lists.Init;
+        Counter : Integer := 1;
     begin
-        Open (File => File,
-              Mode => In_File,
-              Name => Filename);
+        begin
+            Open (File => File,
+                  Mode => In_File,
+                  Name => Filename);
+        exception
+            when others => 
+                Put_Line("Warning: Configuration file " & Filename & " not found");
+                return RecipeList;
+        end;
         while not End_Of_File (File) loop
-            RecipeList.Insert(ParseRecipeCSV(Get_Line(File)));
+            begin
+                RecipeList.Insert(ParseRecipeCSV(Get_Line(File)));
+                Counter := Counter + 1;
+            exception
+                when others =>
+                    Put_Line("Warning: Format error in the configuration file " & Filename & " at line " & Integer'Image(Counter));
+                    Counter := Counter + 1;
+            end;
         end loop;
 
         Close (File);
