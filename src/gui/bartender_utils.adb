@@ -6,7 +6,7 @@ package body Bartender_Utils is
 		Put_Line("==============");
 		for i in bottles'First .. bottles'Last loop
 			Put(bottles(i).Bottle.Name.all); Put(": "); 
-			Put(bottles(i).Bottle.Remaining_Vol'Image); 
+			Put(Integer'Image(bottles(i).Bottle.Remaining_Vol)); 
 			Put_Line("ml");
 		end loop;
 		Put_Line("");
@@ -20,7 +20,7 @@ package body Bartender_Utils is
 			Put(recipes(i).Name.all);
 			Put(": "); 
 			for j in recipes(i).Ingredients'First .. recipes(i).Ingredients'Last loop
-				Put(recipes(i).Ingredients(j).Vol'Image); 
+				Put(Integer'Image(recipes(i).Ingredients(j).Vol)); 
 				Put_Line("ml");
 			end loop;
 		end loop;

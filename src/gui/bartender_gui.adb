@@ -10,8 +10,22 @@ package body Bartender_GUI is
 			found := false;
 			for j in draugs'First .. draugs'Last loop
 				if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
-					found := true;
+					if rec.Ingredients(i).Vol < draugs(j).Bottle.Remaining_Vol then
+						found := true;
+					else 
+						Put("ERROR: Not enough ");
+						Put(draugs(j).Bottle.Name.all);
+						Put(": ");
+						Put("only ");
+						Put(Integer'Image(draugs(j).Bottle.Remaining_Vol));
+						Put_Line("ml remaining");
+						return rec.Ingredients(i).Name;
+					end if;
 				elsif not found and rec.Ingredients(i).Name.all /= draugs(j).Bottle.Name.all and j = draugs'Last then
+					Put("ERROR: Unable to prepare a ");
+					Put(rec.Name.all);
+					Put(": Missing Bottle of");
+					Put_Line(rec.Ingredients(i).Name.all);
 					return rec.Ingredients(i).Name;
 				end if;
 			end loop;
@@ -85,8 +99,8 @@ package body Bartender_GUI is
 		ings	 : Ingredients_Access;
 	begin
 		ings := new Ingredients_Array(1 .. nb);
-		Gtk_New(dialog, Title => "Add Ingredients", Parent => Gtk_Window(Get_Toplevel(from)),
-			Flags => Use_Header_Bar_From_Settings(from));
+		Gtk_New(dialog);
+		dialog.Set_Title("Add Ingredients");
 		dialog.Set_Parent(GUI.Window);
 		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
 		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
@@ -116,7 +130,7 @@ package body Bartender_GUI is
 			for i in 1 .. nb loop
 				Put(ings(i).Name.all);
 				Put("=> ");
-				Put(ings(i).Vol'Image);
+				Put(Integer'Image(ings(i).Vol));
 				Put("ml; ");
 			end loop;
 			Put_Line("");
@@ -138,8 +152,8 @@ package body Bartender_GUI is
 		nbentry		: Gtk_Gentry;
 		nbing		: Integer;
 	begin
-		Gtk_New(dialog, Title => "Add Recipe", Parent => Gtk_Window(Get_Toplevel(from)),
-			Flags => Use_Header_Bar_From_Settings(from));
+		Gtk_New(dialog);
+		dialog.Set_Title("Add Recipe");
 		dialog.Set_Parent(GUI.Window);
 		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
 		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
@@ -177,8 +191,8 @@ package body Bartender_GUI is
 		vol	: Gtk_GEntry;
 		idx	: Integer;
 	begin
-		Gtk_New(dialog, Title => "Replace Bottle", Parent => Gtk_Window(Get_Toplevel(from)),
-			Flags => Use_Header_Bar_From_Settings(from));
+		Gtk_New(dialog);
+		dialog.Set_Title("Replace Bottle");
 		dialog.Set_Parent(GUI.Window);
 		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
 		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
@@ -221,8 +235,8 @@ package body Bartender_GUI is
 		vol	: Gtk_GEntry;
 		idx	: Integer;
 	begin
-		Gtk_New(dialog, Title => "Refill Bottle", Parent => Gtk_Window(Get_Toplevel(from)),
-			Flags => Use_Header_Bar_From_Settings(from));
+		Gtk_New(dialog);
+		dialog.Set_Title("Refill Bottle");
 		dialog.Set_Parent(GUI.Window);
 		btnOK := Gtk_Button(dialog.Add_Button("OK", GTK_Response_OK));
 		btnKO := Gtk_Button(dialog.Add_Button("Cancel", GTK_Response_Cancel));
@@ -245,8 +259,9 @@ package body Bartender_GUI is
 			Put("LOG: Refilling bottle of ");
 			Put(draugs(idx).Bottle.Name.all);
 			Put(", new volume is ");
-			Put(draugs(idx).Bottle.Remaining_Vol'Image);
-			Put("ml");
+			Put(Integer'Image(draugs(idx).Bottle.Remaining_Vol));
+			Put_Line("ml");
+			Put("");
 		else
 			Put_Line("LOG: Cancel bottle refill");
 		end if;
@@ -264,11 +279,11 @@ package body Bartender_GUI is
 		Put("Error: ");
 		Put(rec.Name.all);
 		Put(" needs ");
-		Put(ing.Vol'Image);
+		Put(Integer'Image(ing.Vol));
 		Put("ml of ");
 		Put(ing.Name.all);
 		Put(" but the remaining volume is ");
-		Put(bot.Remaining_Vol'Image);
+		Put(Integer'Image(bot.Remaining_Vol));
 		Put_Line("ml");
 	end;
 
@@ -294,11 +309,6 @@ package body Bartender_GUI is
 					end if;
 				end loop;
 			end loop;
-		else
-			Put("ERROR: Unable to prepare a ");
-			Put(rec.Name.all);
-			Put(": Missing bottle of ");
-			Put_Line(check.all);
 		end if;
 		DumpBottleArrAccess(draugs);
 	end;

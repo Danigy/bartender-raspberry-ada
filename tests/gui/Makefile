@@ -8,4 +8,4 @@ gui: clean
 	gprbuild 
 
 clean:
-	$(RM) *.d *.o *.ali *.std* *.bexch b__$(PRJ).* $(PRJ)
+	$(RM) *.cgpr *.deps *.a *.d *.o *.ali *.std* *.bexch b__$(PRJ).* $(PRJ)
