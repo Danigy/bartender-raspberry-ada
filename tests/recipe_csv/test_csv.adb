@@ -3,8 +3,9 @@ with Recipe_Lists; use Recipe_Lists;
 with Recipes;
 
 procedure Test_CSV is
-    Filename : String := "test.csv";
-    List : Recipe_List := Recipe_CSV.ReadCSV(Filename);
+    List1 : Recipe_List := Recipe_CSV.ReadCSV("test1.csv");
+    List2 : Recipe_List := Recipe_CSV.ReadCSV("test2.csv");
+    List3 : Recipe_List := Recipe_CSV.ReadCSV("test3.csv");
     procedure Print_Recipe(Recipe : Available_Recipe) is
         Cocktail : Recipes.Recipe := Recipe.Cocktail;
     begin
@@ -14,7 +15,13 @@ procedure Test_CSV is
         end loop;
     end Print_Recipe;
 begin
-    for I in 0 .. List.Length - 1 loop
-        Print_Recipe(List.Get(I));
+    for I in 0 .. List1.Length - 1 loop
+        Print_Recipe(List1.Get(I));
+    end loop;
+    for I in 0 .. List2.Length - 1 loop
+        Print_Recipe(List2.Get(I));
+    end loop;
+    for I in 0 .. List3.Length - 1 loop
+        Print_Recipe(List3.Get(I));
     end loop;
 end Test_CSV;
