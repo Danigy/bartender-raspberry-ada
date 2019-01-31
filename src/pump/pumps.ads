@@ -4,8 +4,8 @@ package Pumps is
 
     type Pump is record
         IO 	: GPIO.Pin;
-        Flow 	: Integer;
-	NB	: Integer;
+        Flow 	: Positive;
+	    NB	: Natural;
     end record;
 
      FUNCTION GetTime
