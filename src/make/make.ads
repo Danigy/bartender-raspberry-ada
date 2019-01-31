@@ -1,42 +1,46 @@
-With Pumps; 	USE Pumps;
-With Draughts; 	USE Draughts;
-WITH Recipes; 	USE Recipes;
-WITH Bottles;	USE Bottles;
+with Pumps;    use Pumps;
+with Draughts; use Draughts;
+with Recipes;  use Recipes;
+with Bottles;  use Bottles;
 
-PACKAGE MAKE IS
+package Make is
 
-type Job is record
+    type Job is record
         P : Pump;
         T : Duration;
-end record;
+    end record;
 
-type Jobs is array (Integer range <>) of Job;
+    type Jobs is array (Integer range <>) of Job;
 
-type JobsAccess is Access Jobs;
+    type JobsAccess is Access Jobs;
 
-PROCEDURE BSort
-	(J : in out Jobs);
+    procedure BSort
+        (J : in out Jobs);
 
-PROCEDURE Schedule
-	(J : in out Jobs);
+    procedure Schedule
+        (J : in out Jobs);
 
-PROCEDURE AddJob
+    procedure AddJob
         (Ing	: in Ingredient;
-         Mach	: in out Draught_Array;
+         Mach	: in Draught_Array;
          J	: in out JobsAccess);
 
-FUNCTION GetJobs
-	(Rec  	: Recipe;
-	 Mach	: in out Draught_Array)
-        RETURN JobsAccess;
+    function GetJobs
+        (Rec  	: Recipe;
+         Mach	: Draught_Array)
+         return JobsAccess;
 
-FUNCTION Groom
-	(Rec	: Recipe;
-	 Mach	: in out Draught_Array)
-	 RETURN JobsAccess;
+    procedure RemoveVolumes
+        (Rec	: Recipe;
+	 Mach	: in out Draught_Array);
 
-FUNCTION MakeCocktail 
-	(J : JobsAccess)
-	RETURN Boolean;
+    function Groom
+        (Rec	: Recipe;
+         Mach	: in out Draught_Array)
+         return JobsAccess;
 
-END MAKE;
+    function MakeCocktail 
+        (J : JobsAccess)
+        return Boolean;
+
+end Make;
