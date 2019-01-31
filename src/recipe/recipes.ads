@@ -1,10 +1,7 @@
 with Ada.Strings.Unbounded;
+with Strings; use Strings;
 
 package Recipes is
-
-    subtype Positive is Integer range 1 .. Integer'Last;
-
-    type String_Access is access all String;
 
     type Ingredient is record
         Name : String_Access;
