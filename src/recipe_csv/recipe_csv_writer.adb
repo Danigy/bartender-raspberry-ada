@@ -19,6 +19,7 @@ package body Recipe_CSV_Writer is
                 Put (File, "," & Ingredients(I).Name.all & "," & Integer'Image(Ingredients(I).vol));
             end loop;
         end;
+	Close(File);
     end Add_To_CSV;
 
 end Recipe_CSV_Writer;

@@ -11,11 +11,12 @@ package body Pump_CSV_Writer is
             when Name_Error => Create (File, Mode => Out_File, Name => Filename);
         end;
         for I in Tap'Range loop
-            Put_Line (File, Integer'Image(Tap(I).Pump.GPIO) & ","
-                & Float'Image(Tap(I).Pump.Flow) & ","
+            Put_Line (File, Integer'Image(Tap(I).Pump.NB) & ","
+                & Integer'Image(Tap(I).Pump.Flow) & ","
                 & Tap(I).Bottle.Name.all & ","
                 & Integer'Image(Tap(I).Bottle.Remaining_Vol));
         end loop;
+	Close(File);
     end Write_CSV;
 
 end Pump_CSV_Writer;
