@@ -6,8 +6,6 @@ PACKAGE BODY Pumps IS
 	    (P		: Pump;
 	     Vol	: Integer)
 	     RETURN Duration IS
-
-	      Time : Duration;
     BEGIN
 	    return Duration(Vol) / Duration(P.Flow);
     END GetTime;
