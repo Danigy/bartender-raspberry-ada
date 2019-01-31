@@ -3,8 +3,9 @@ WITH GPIO.libsimpleio; USE GPIO.libsimpleio;
 package Pumps is
 
     type Pump is record
-        IO : GPIO.Pin;
-        Flow : Integer;
+        IO 	: GPIO.Pin;
+        Flow 	: Integer;
+	NB	: Integer;
     end record;
 
      FUNCTION GetTime

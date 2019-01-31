@@ -60,6 +60,7 @@ package body Bartender_GUI is
 			GUI.BottleButts(i).Draught := draugs(i);
 			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
 		end loop;
+		Pump_CSV_Writer.write_CSV("pumps.csv", draugs.all);
 		GUI.AllRecScroll.add_with_viewport(GUI.AllRecBox);
 		GUI.Window.Show_All;
 	end;

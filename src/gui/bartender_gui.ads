@@ -27,6 +27,7 @@ with Recipe_CSV;		use Recipe_CSV;
 with Recipe_CSV_Writer;		use Recipe_CSV_Writer;
 with Pumps;			use Pumps;
 with Pump_CSV;			use Pump_CSV;
+with Pump_CSV_Writer;		use Pump_CSV_Writer;
 with Draughts;			use Draughts;
 with Bottles;			use Bottles;
 with Make;			use Make;
