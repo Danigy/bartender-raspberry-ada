@@ -1,4 +1,5 @@
-with Recipes;
+with Recipes; use Recipes;
+with Strings; use Strings;
 
 package Recipe_lists is
     type Available_Recipe;
@@ -15,8 +16,10 @@ package Recipe_lists is
         Tail : Available_Recipe_Access;
     end record;
 
-    function Init return Recipe_List;
-    procedure Insert(This : in out Recipe_List; Cocktail : Recipes.Recipe; Available : Boolean := false);
+    function Init return Recipe_List
+        with Post => Init'Result.Length = 0 and then Init'Result.Tail = null;
+    procedure Insert(This : in out Recipe_List; Cocktail : Recipes.Recipe; Available : Boolean := false)
+        with Post => This.Length >  This'Old.Length and then This'Old.Tail = This.Tail.Next and then This.Tail.all.Cocktail.Name = Cocktail.Name and then This.Tail.all.Cocktail.Ingredients = Cocktail.Ingredients;
     function Get(This : Recipe_List; Elt : Natural) return Available_Recipe
         with Pre => Elt < This.Length;
 
