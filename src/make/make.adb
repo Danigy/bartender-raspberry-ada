@@ -36,13 +36,21 @@ PROCEDURE AddJob
 	 J 	: in out JobsAccess) IS
 	
 	Ret : Job;
+	TmpArr : Jobs(1..1);
 BEGIN
 	for I in Mach'Range loop
 		if Ing.Name.all = Mach(I).Bottle.Name.all then
 			Ret := (Mach(I).Pump, GetTime(Mach(I).Pump, Ing.Vol));
 		end if;
 	end loop;
-	J := new Jobs'(J.all & Ret);
+	Put("Add Job of ");
+	Put_Line(Ing.Name.all);
+	if J = null then
+		TmpArr := (others => Ret);
+		J := new Jobs'(TmpArr);
+	else
+		J := new Jobs'(J.all & Ret);
+	end if;
 END AddJob;
 
 FUNCTION GetJobs
@@ -50,7 +58,7 @@ FUNCTION GetJobs
 	 Mach	: Draught_Array)
 	RETURN JobsAccess IS
 
-	J : JobsAccess;
+	J : JobsAccess := null;
 BEGIN
 	for I in Rec.Ingredients.all'Range loop
 		AddJob(Rec.Ingredients.all(I), Mach, J);

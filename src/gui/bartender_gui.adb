@@ -289,26 +289,17 @@ package body Bartender_GUI is
 
 	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe) is
 		pragma Unreferenced (from);
-		check : Recipes.String_Access := checkAvailableRecipe(rec);
+		check 	: Recipes.String_Access := checkAvailableRecipe(rec);
+		J	: JobsAccess;
 	begin
 		if check = null then
 			Put("LOG: preparing "); Put_Line(rec.name.all);
-			for i in rec.Ingredients'First .. rec.Ingredients'Last loop
-				for j in draugs'First .. draugs'Last loop
-					if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
-						if rec.Ingredients(i).Vol < Draugs(j).Bottle.Remaining_Vol then
-							-- TODO call to the good GPIO / pump
-							Put("Pouring ");
-							Put(rec.Ingredients(i).Name.all);
-							Put(" from bottle of ");
-							Put_Line(draugs(j).Bottle.Name.all);
-							Bottles.RemoveRemainingVolume(draugs(j).Bottle, rec.Ingredients(i).Vol);
-						else
-							DoRecipeErrorVolume(rec, draugs(j).Bottle);
-						end if;
-					end if;
-				end loop;
-			end loop;
+			J := Make.Groom(rec, draugs.all);
+			if MakeCocktail(J) then
+				Put_Line("Done");
+			else
+				Put_Line("Make Cocktail failed");
+			end if;
 		end if;
 		DumpBottleArrAccess(draugs);
 	end;

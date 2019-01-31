@@ -29,6 +29,7 @@ with Pumps;			use Pumps;
 with Pump_CSV;			use Pump_CSV;
 with Draughts;			use Draughts;
 with Bottles;			use Bottles;
+with Make;			use Make;
 with Bartender_Utils;		use Bartender_Utils;
 
 package Bartender_GUI is
