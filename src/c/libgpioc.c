@@ -33,7 +33,7 @@
 #include <sys/param.h>
 
 #include "errmsg.inc"
-#include "libgpio.h"
+#include "libgpioc.h"
 
 void GPIO_chip_info(int32_t chip, char *name, int32_t namesize,
   char *label, int32_t labelsize, int32_t *lines, int32_t *error)
