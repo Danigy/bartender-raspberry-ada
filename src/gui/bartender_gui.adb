@@ -1,9 +1,11 @@
+with Strings; use Strings;
+
 package body Bartender_GUI is
 	GUI 	: GUIAccess;
 	draugs	: DraughtArrAccess;
 	recs	: RecipeArrAccess;
 
-	function CheckAvailableRecipe(rec : Recipes.Recipe) return Recipes.String_Access is
+	function CheckAvailableRecipe(rec : Recipes.Recipe) return String_Access is
 		found : Boolean := false;
 	begin
 		for i in rec.Ingredients'First .. rec.Ingredients'Last loop
@@ -90,7 +92,7 @@ package body Bartender_GUI is
 		Main_Quit;
 	end;
 
-	procedure callbackAddIngredients(from : access Gtk_Menu_Item_Record'Class; name : Recipes.String_Access; nb : Positive) is
+	procedure callbackAddIngredients(from : access Gtk_Menu_Item_Record'Class; name : String_Access; nb : Positive) is
 		dialog   : Gtk_Dialog;
 		btnOK    : Gtk_Button; pragma unreferenced(btnOK);
 		btnKO    : Gtk_Button; pragma unreferenced(btnKO);
@@ -272,7 +274,7 @@ package body Bartender_GUI is
 
 	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe) is
 		pragma Unreferenced (from);
-		check 	: Recipes.String_Access := checkAvailableRecipe(rec);
+		check 	: String_Access := checkAvailableRecipe(rec);
 		J	: JobsAccess;
 	begin
 		if check = null then

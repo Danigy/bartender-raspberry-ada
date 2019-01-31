@@ -1,4 +1,5 @@
 with Ada.Text_IO; use Ada.Text_IO;
+with Strings; use Strings;
 with Draughts, Bottles, GPIO;
 with GPIO.libsimpleio;
 with CSV;
@@ -29,7 +30,7 @@ package body Pump_CSV is
         IO : GPIO.Pin := GPIO.libsimpleio.Create(0, NB, GPIO.Output);
         Flow : Integer := 0;
 
-        Bottle_Name : Bottles.String_Access := null;
+        Bottle_Name : String_Access := null;
         Remaining_Vol : Integer := 0;
     begin
         First := Next + 1;

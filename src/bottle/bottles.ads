@@ -1,7 +1,7 @@
+with Strings; use Strings;
+
 package Bottles is
     subtype Volume is Integer range 0 .. Integer'Last;
-
-    type String_Access is access String;
 
     type Bottle is tagged record
         Name : String_Access;
