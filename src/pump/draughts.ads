@@ -8,5 +8,6 @@ package Draughts is
     end record;
 
     type Draught_Array is array(Positive range <>) of Draught;
+    type DraughtArrAccess is access all Draught_Array;
 
 end Draughts;

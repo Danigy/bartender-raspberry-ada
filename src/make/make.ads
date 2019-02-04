@@ -10,7 +10,7 @@ package Make is
         T : Duration;
     end record;
 
-    type Jobs is array (Integer range <>) of Job;
+    type Jobs is array (Positive range <>) of Job;
 
     type JobsAccess is Access Jobs;
 
@@ -47,7 +47,7 @@ package Make is
 	 Mach	: in out Draught_Array)
     with
        Post => (
-             for all I in Mach'Range => Mach'old(I).Bottle.Remaining_Vol >= Mach(I).Bottle.Remaining_Vol);
+             for all I in Mach'Range => Mach'old(I).Bottle.Vol >= Mach(I).Bottle.Vol);
 
     function Groom
         (Rec	: Recipe;

@@ -76,7 +76,7 @@ package body Make is
         for I in Rec.Ingredients.all'Range loop
             for J in Mach'Range loop
                 if Rec.Ingredients.all(I).Name.all = Mach(I).Bottle.Name.all then
-                    RemoveRemainingVolume(Mach(I).Bottle,  Rec.Ingredients.all(I).Vol);
+                    RemoveVolume(Mach(I).Bottle,  Rec.Ingredients.all(I).Vol);
                 end if;
             end loop;
         end loop;

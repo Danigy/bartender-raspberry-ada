@@ -31,7 +31,6 @@ with Pump_CSV_Writer;		use Pump_CSV_Writer;
 with Draughts;			    use Draughts;
 with Bottles;			    use Bottles;
 with Make;			        use Make;
-with Bartender_Utils;		use Bartender_Utils;
 
 package Bartender_GUI is
 
@@ -44,8 +43,6 @@ package Bartender_GUI is
 
 	type GEntryArray is array(Positive range<>) of Gtk_GEntry;
 	type GEntryArrAccess is access GEntryArray;
-
-	subtype Positive is Integer range 0 .. Integer'Last;
 
 	type RecButton is record
 		Button	: Gtk_Button;
