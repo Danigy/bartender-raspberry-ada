@@ -1,47 +1,42 @@
 with Strings; use Strings;
+with Log;
 
 package body Bartender_GUI is
 	GUI 	: GUIAccess;
 	draugs	: DraughtArrAccess;
 	recs	: RecipeArrAccess;
 
-	function CheckAvailableRecipe(rec : Recipes.Recipe) return String_Access is
+	function IsAvailable(rec : Recipes.Recipe) return Boolean is
 		found : Boolean := false;
 	begin
-		for i in rec.Ingredients'First .. rec.Ingredients'Last loop
+		for i in rec.Ingredients'Range loop
 			found := false;
-			for j in draugs'First .. draugs'Last loop
+			for j in draugs'Range loop
 				if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
-					if rec.Ingredients(i).Vol < draugs(j).Bottle.Remaining_Vol then
+					if rec.Ingredients(i).Vol > draugs(j).Bottle.Remaining_Vol then
+						Log.MissingQuantity(rec.Ingredients(i).Name,
+								    draugs(j).Bottle.Remaining_Vol);
+						return false;
+					else
 						found := true;
-					else 
-						Put("ERROR: Not enough ");
-						Put(draugs(j).Bottle.Name.all);
-						Put(": ");
-						Put("only ");
-						Put(Integer'Image(draugs(j).Bottle.Remaining_Vol));
-						Put_Line("ml remaining");
-						return rec.Ingredients(i).Name;
 					end if;
-				elsif not found and rec.Ingredients(i).Name.all /= draugs(j).Bottle.Name.all and j = draugs'Last then
-					Put("ERROR: Unable to prepare a ");
-					Put(rec.Name.all);
-					Put(": Missing Bottle of");
-					Put_Line(rec.Ingredients(i).Name.all);
-					return rec.Ingredients(i).Name;
 				end if;
 			end loop;
+			if found = false then
+				Log.MissingBottle(rec.Ingredients(i).Name);
+				return false;
+			end if;
 		end loop;
-		return null;
-	end;
+		return true;
+	end IsAvailable;
 
 	procedure UpdateAllRecButts is
 	begin
-		for i in GUI.AllRecButts'first .. GUI.AllRecButts'last loop
+		for i in GUI.AllRecButts'Range loop
 			Remove(GUI.AllRecBox, GUI.AllRecButts(i).Button);
 		end loop;
-		GUI.AllRecButts := new RecButtonArray(recs'First..recs'Last);
-		for i in GUI.AllRecButts'First..GUI.AllRecButts'Last loop
+		GUI.AllRecButts := new RecButtonArray(recs'Range);
+		for i in GUI.AllRecButts'Range loop
 			Gtk_New(GUI.AllRecButts(i).Button, recs(i).Name.all);
 			GUI.AllRecButts(i).Rec := recs(i);
 			Connect (GUI.AllRecButts(i).Button, "clicked", callbackDoRecipe'access, recs(i));
@@ -53,11 +48,11 @@ package body Bartender_GUI is
 
 	procedure UpdateBottleButts is
 	begin
-		for i in GUI.BottleButts'first .. GUI.BottleButts'last loop
+		for i in GUI.BottleButts'Range loop
 			Remove(GUI.BottleBox, GUI.BottleButts(i).Button);
 		end loop;
-		GUI.BottleButts := new DraughtButtonArray(draugs'First..draugs'Last);
-		for i in GUI.BottleButts'First..GUI.BottleButts'Last loop
+		GUI.BottleButts := new DraughtButtonArray(draugs'Range);
+		for i in GUI.BottleButts'Range loop
 			Gtk_New(GUI.BottleButts(i).Button, draugs(i).Bottle.Name.all);
 			GUI.BottleButts(i).Draught := draugs(i);
 			GUI.BottleBox.Pack_End(GUI.BottleButts(i).Button);
@@ -195,7 +190,7 @@ package body Bartender_GUI is
 		Gtk_New(combo);
 		Gtk_New(name);
 		Gtk_New(vol);
-		for i in draugs'first .. draugs'last loop
+		for i in draugs'Range loop
 			Append_Text(combo, draugs(i).Bottle.Name.all);
 		end loop;
 		Pack_Start(box, combo, Expand => false);
@@ -236,7 +231,7 @@ package body Bartender_GUI is
 		Gtk_New_VBox(box, Homogeneous => false);
 		Gtk_New(combo);
 		Gtk_New(vol);
-		for i in draugs'first .. draugs'last loop
+		for i in draugs'Range loop
 			Append_Text(combo, draugs(i).Bottle.Name.all);
 		end loop;
 		Pack_Start(box, combo, Expand => false);
@@ -258,11 +253,11 @@ package body Bartender_GUI is
 
 	procedure callbackDoRecipe(from : access Gtk_Button_Record'class; rec : Recipes.Recipe) is
 		pragma Unreferenced (from);
-		check 	: String_Access := checkAvailableRecipe(rec);
+		check 	: Boolean := IsAvailable(rec);
 		J	: JobsAccess;
 	begin
-		if check = null then
-			Put("LOG: preparing "); Put_Line(rec.name.all);
+		if check = false then
+			Log.PrepareCocktail(rec.name);
 			J := Make.Groom(rec, draugs.all);
 			if MakeCocktail(J) then
 				Log.CocktailDone(rec.name);
