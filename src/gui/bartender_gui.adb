@@ -127,21 +127,11 @@ package body Bartender_GUI is
 			end loop;
 			ret := (Name => name, Ingredients => ings);
 			recs := new RecipeArray'(recs.all & ret);
-			Put("LOG: Added new recipe: ");
-			Put(ret.Name.all);
-			Put(", Ingredients are: ");
-			for i in 1 .. nb loop
-				Put(ings(i).Name.all);
-				Put("=> ");
-				Put(Integer'Image(ings(i).Vol));
-				Put("ml; ");
-			end loop;
-			Put_Line("");
-			DumpRecipeArrAccess(recs);
+			Log.AddRecipe(ret, recs);
 			UpdateAllRecButts;
 			Recipe_CSV_Writer.Add_To_CSV("recipes.csv", ret);
 		else
-			Put_Line("Cancel Add recipe");
+			Log.CannotAddRecipe("Canceled");
 		end if;
 		dialog.destroy;
 	end;
@@ -176,10 +166,10 @@ package body Bartender_GUI is
 			if nbing > 0 then
 				callbackAddIngredients(from, new String'(Get_Text(name)), nbing);
 			else
-				Put_Line("Bad nb of ingredients");
+				Log.CannotAddRecipe("Bad nb of ingredients");
 			end if;
 		else
-			Put_Line("Cancel Add recipe");
+			Log.CannotAddRecipe("Canceled");
 		end if;
 		dialog.destroy;
 	end;
@@ -193,6 +183,7 @@ package body Bartender_GUI is
 		name	: Gtk_Gentry;
 		vol	: Gtk_GEntry;
 		idx	: Integer;
+		Old	: String_Access;
 	begin
 		Gtk_New(dialog);
 		dialog.Set_Title("Replace Bottle");
@@ -216,14 +207,12 @@ package body Bartender_GUI is
 
 		if dialog.run = GTK_Response_OK then
 			idx := Integer(Get_Active(combo)) + 1;
-			Put("LOG: Replacing bottle of ");
-			Put(draugs(idx).Bottle.Name.all);
-			Put(" by a Bottle of ");
+			Old := draugs(idx).Bottle.Name;
 			draugs(idx).Bottle.Name := new String'(Get_Text(name));
 			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
-			Put_Line(draugs(idx).Bottle.Name.all);
+			Log.ReplaceBottle(Old, draugs(idx).Bottle.Name);
 		else
-			Put_Line("Cancel bottle replacement");
+			Log.CannotReplaceBottle;
 		end if;
 		dialog.destroy;
 		UpdateBottleButts;
@@ -259,15 +248,10 @@ package body Bartender_GUI is
 		if dialog.run = GTK_Response_OK then
 			idx := Integer(Get_Active(combo)) + 1;
 			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
-			Put("LOG: Refilling bottle of ");
-			Put(draugs(idx).Bottle.Name.all);
-			Put(", new volume is ");
-			Put(Integer'Image(draugs(idx).Bottle.Remaining_Vol));
-			Put_Line("ml");
-			Put("");
+			Log.RefillBottle(draugs(idx).Bottle.Name, draugs(idx).Bottle.Remaining_Vol);
 			UpdateBottleButts;
 		else
-			Put_Line("LOG: Cancel bottle refill");
+			Log.CannotRefillBottle;
 		end if;
 		dialog.destroy;
 	end;
@@ -281,10 +265,10 @@ package body Bartender_GUI is
 			Put("LOG: preparing "); Put_Line(rec.name.all);
 			J := Make.Groom(rec, draugs.all);
 			if MakeCocktail(J) then
-				Put_Line("Done");
+				Log.CocktailDone(rec.name);
 				UpdateBottleButts;
 			else
-				Put_Line("Make Cocktail failed");
+				Log.FailedMake(rec.name);
 			end if;
 		end if;
 		DumpBottleArrAccess(draugs);
