@@ -29,4 +29,6 @@ package Log is
 	procedure DumpBottleArr(bottles : DraughtArrAccess);
 
 	procedure DumpRecipeArr(recipes : RecipeArrAccess);
+
+	procedure AddJob(Name: in String_Access);
 end Log;

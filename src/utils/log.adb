@@ -66,7 +66,7 @@ package body Log is
 
 	procedure DumpBottleArr(bottles : DraughtArrAccess) is
 	begin
-		Put_Line("Bottle Dump :");
+		Put_Line("Bottle Dump: ");
 		for i in bottles'Range loop
 			Put_line(bottles(i).Bottle.Name.all & ": " &
 				 Natural'Image(bottles(i).Bottle.Vol) & "ml");
@@ -76,14 +76,19 @@ package body Log is
 
 	procedure DumpRecipeArr(recipes : RecipeArrAccess) is
 	begin
-		Put_Line("RECIPES DUMP :");
+		Put_Line("Recipe Dump: ");
 		for i in recipes'Range loop
 			Put_line(recipes(i).Name.all & ": ");
 			for j in recipes(i).Ingredients'Range loop
 				Put_line(Natural'Image(recipes(i).Ingredients(j).Vol) & "ml");
 			end loop;
 		end loop;
-	Put_Line("");
+		Put_Line("");
 	end DumpRecipeArr;
+
+	procedure AddJob(Name: in String_Access) is
+	begin
+		Put_Line("Add Job: " & Name.all);
+	end AddJob;
 
 end Log;
