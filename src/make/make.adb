@@ -1,10 +1,4 @@
-with Ada.Text_IO;      use Ada.Text_IO;
-with Ada.Strings;      use Ada.Strings;
-with GPIO.libsimpleio; use GPIO.libsimpleio;
-with Pumps;            use Pumps;
-with Recipes;          use Recipes;
-with Bottles;          use Bottles;
-with Draughts;         use Draughts;
+with Log;
 
 package body Make is
        
@@ -45,8 +39,7 @@ package body Make is
                 Ret := (Mach(I).Pump, GetTime(Mach(I).Pump, Ing.Vol));
             end if;
         end loop;
-        Put("Add Job of ");
-        Put_Line(Ing.Name.all);
+        Log.AddJob(Ing.Name);
         if J = null then
             TmpArr := (others => Ret);
             J := new Jobs'(TmpArr);
