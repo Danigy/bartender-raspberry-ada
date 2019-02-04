@@ -5,7 +5,7 @@ package Pumps is
     type Pump is record
         IO 	: GPIO.Pin;
         Flow 	: Positive;
-	    NB	: Natural;
+        NB	: Natural;
     end record;
 
      FUNCTION GetTime

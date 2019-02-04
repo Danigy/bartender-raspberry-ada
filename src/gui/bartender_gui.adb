@@ -286,7 +286,7 @@ package body Bartender_GUI is
 		Gtk_New(GUI.Window);
 		GUI.Window.Set_Title(title);
 		GUI.Window.set_default_size(400,400);
-		
+
 		-- setting up main box object
 		Gtk_New_VBox(GUI.MainBox);
 
