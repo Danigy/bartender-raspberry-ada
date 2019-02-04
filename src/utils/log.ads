@@ -25,4 +25,8 @@ package Log is
 	procedure ReplaceBottle(NameOld: in String_Access; NameNew: in String_Access);
 
 	procedure CannotReplaceBottle;
+
+	procedure DumpBottleArr(bottles : DraughtArrAccess);
+
+	procedure DumpRecipeArr(recipes : RecipeArrAccess);
 end Log;

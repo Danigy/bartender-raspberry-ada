@@ -266,7 +266,7 @@ package body Bartender_GUI is
 				Log.FailedMake(rec.name);
 			end if;
 		end if;
-		DumpBottleArrAccess(draugs);
+		Log.DumpBottleArr(draugs);
 	end;
 
 	procedure InitGUI is
@@ -348,7 +348,7 @@ package body Bartender_GUI is
 		-- setting up main box
 		GUI.MainBox.pack_start(GUI.Tabs, Expand => true, Fill => true);
 		GUI.Window.Add(GUI.MainBox);
-		DumpBottleArrAccess(draugs);
+		Log.DumpBottleArr(draugs);
 
 	end InitGUI;
 

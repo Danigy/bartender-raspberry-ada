@@ -31,7 +31,6 @@ with Pump_CSV_Writer;		use Pump_CSV_Writer;
 with Draughts;			    use Draughts;
 with Bottles;			    use Bottles;
 with Make;			        use Make;
-with Bartender_Utils;		use Bartender_Utils;
 
 package Bartender_GUI is
 

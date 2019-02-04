@@ -39,7 +39,7 @@ package body Log is
 			Put_line (rec.Ingredients.all(I).Name.all & "=> " & 
 				  Integer'Image(rec.Ingredients.all(I).Vol) & "ml.");
 		end loop;
-		DumpRecipeArrAccess(recs);
+		DumpRecipeArr(recs);
 	end AddRecipe;
 
 	procedure RefillBottle(Name: in String_Access; Vol: in Positive) is
@@ -63,4 +63,27 @@ package body Log is
 	begin
 		Put_line("Cannot Replace Bottle: Canceled");
 	end CannotReplaceBottle;
+
+	procedure DumpBottleArr(bottles : DraughtArrAccess) is
+	begin
+		Put_Line("Bottle Dump :");
+		for i in bottles'Range loop
+			Put_line(bottles(i).Bottle.Name.all & ": " &
+				 Natural'Image(bottles(i).Bottle.Vol) & "ml");
+		end loop;
+		Put_Line("");
+	end DumpBottleArr;
+
+	procedure DumpRecipeArr(recipes : RecipeArrAccess) is
+	begin
+		Put_Line("RECIPES DUMP :");
+		for i in recipes'Range loop
+			Put_line(recipes(i).Name.all & ": ");
+			for j in recipes(i).Ingredients'Range loop
+				Put_line(Natural'Image(recipes(i).Ingredients(j).Vol) & "ml");
+			end loop;
+		end loop;
+	Put_Line("");
+	end DumpRecipeArr;
+
 end Log;

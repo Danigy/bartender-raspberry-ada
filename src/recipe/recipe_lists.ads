@@ -16,6 +16,9 @@ package Recipe_lists is
         Tail : Available_Recipe_Access;
     end record;
 
+    type RecipeArray is array(Positive range <>) of Recipes.Recipe;
+    type RecipeArrAccess is access all RecipeArray;
+
     function Init return Recipe_List
         with Post => Init'Result.Length = 0 and then Init'Result.Tail = null;
     procedure Insert(This : in out Recipe_List; Cocktail : Recipes.Recipe; Available : Boolean := false)
