@@ -9,7 +9,7 @@ package body Pump_CSV is
     function ReadCSV (Filename : String) return Draughts.Draught_Array is
         File : File_Type;
         AvailableDraughts : Draughts.Draught_Array(1 .. 4);
-        I : Integer := 1;
+        I : Natural := 1;
     begin
         Open (File => File,
               Mode => In_File,
@@ -31,7 +31,7 @@ package body Pump_CSV is
         Flow : Integer := 0;
 
         Bottle_Name : String_Access := null;
-        Remaining_Vol : Integer := 0;
+        Vol : Integer := 0;
     begin
         First := Next + 1;
         Next := CSV.NextElement(Content, First);
@@ -41,8 +41,8 @@ package body Pump_CSV is
         Bottle_Name := new String'(Content(First .. Next - 1));
         First := Next + 1;
         Next := CSV.NextElement(Content, First);
-        Remaining_Vol := Integer'Value(Content(First .. Next - 1));
-        return ((Bottle_Name,  Remaining_Vol), (IO, Flow, NB));
+        Vol := Integer'Value(Content(First .. Next - 1));
+        return ((Bottle_Name, Vol), (IO, Flow, NB));
 
     end ParseDraughtCSV;
 

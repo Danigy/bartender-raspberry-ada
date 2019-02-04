@@ -4,7 +4,7 @@ package Bottles is
 
     type Bottle is tagged record
         Name : String_Access;
-        Remaining_Vol : Positive; -- Remaining Volume in the bottle in ml
+        Vol : Natural; -- Remaining Volume in the bottle in ml
     end record;
 
     type BottleArray is array(Positive range <>) of Bottles.Bottle;

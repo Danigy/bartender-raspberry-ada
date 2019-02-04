@@ -44,8 +44,6 @@ package Bartender_GUI is
 	type GEntryArray is array(Positive range<>) of Gtk_GEntry;
 	type GEntryArrAccess is access GEntryArray;
 
-	subtype Positive is Integer range 0 .. Integer'Last;
-
 	type RecButton is record
 		Button	: Gtk_Button;
 		Rec 	: Recipes.Recipe;

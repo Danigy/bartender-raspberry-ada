@@ -1,10 +1,10 @@
 With Strings; use Strings;
 With Recipes; use Recipes;
+With Draughts; use Draughts;
 With Recipe_lists; use Recipe_lists;
-With Bartender_utils; use Bartender_utils;
 
 package Log is
-        procedure MissingQuantity(Name: in String_Access; Vol: in Positive);
+        procedure MissingQuantity(Name: in String_Access; Vol: in Natural);
 
         procedure MissingBottle(Name: in String_Access);
 
@@ -18,7 +18,7 @@ package Log is
 
         procedure AddRecipe(rec : in Recipes.Recipe; recs: in RecipeArrAccess);
 
-        procedure RefillBottle(Name: in String_Access; Vol: in Positive);
+        procedure RefillBottle(Name: in String_Access; Vol: in Natural);
 
         procedure CannotRefillBottle;
 

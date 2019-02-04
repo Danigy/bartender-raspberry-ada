@@ -1,6 +1,8 @@
 package body Bottles is
-    procedure RemoveRemainingVolume (bot: in out Bottle; Vol : Positive) is
+
+    procedure RemoveVolume (bot: in out Bottle; Vol : Natural) is
     begin
-        bot.Remaining_Vol := bot.Remaining_Vol - Vol;
-    end RemoveRemainingVolume;
+        bot.Vol := bot.Vol - Vol;
+    end RemoveVolume;
+
 end Bottles;

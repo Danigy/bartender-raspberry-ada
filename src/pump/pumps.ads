@@ -10,7 +10,7 @@ package Pumps is
 
      FUNCTION GetTime
             (P       : Pump;
-             Vol     : Integer)
+             Vol     : Positive)
              RETURN Duration;
 
 end Pumps;

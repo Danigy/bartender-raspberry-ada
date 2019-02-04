@@ -13,9 +13,9 @@ package body Bartender_GUI is
 			found := false;
 			for j in draugs'Range loop
 				if rec.Ingredients(i).Name.all = draugs(j).Bottle.Name.all then
-					if rec.Ingredients(i).Vol > draugs(j).Bottle.Remaining_Vol then
+					if rec.Ingredients(i).Vol > draugs(j).Bottle.Vol then
 						Log.MissingQuantity(rec.Ingredients(i).Name,
-								    draugs(j).Bottle.Remaining_Vol);
+								    draugs(j).Bottle.Vol);
 						return false;
 					else
 						found := true;
@@ -204,7 +204,7 @@ package body Bartender_GUI is
 			idx := Integer(Get_Active(combo)) + 1;
 			Old := draugs(idx).Bottle.Name;
 			draugs(idx).Bottle.Name := new String'(Get_Text(name));
-			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
+			draugs(idx).Bottle.Vol := Integer'Value(Get_Text(vol));
 			Log.ReplaceBottle(Old, draugs(idx).Bottle.Name);
 		else
 			Log.CannotReplaceBottle;
@@ -242,8 +242,8 @@ package body Bartender_GUI is
 
 		if dialog.run = GTK_Response_OK then
 			idx := Integer(Get_Active(combo)) + 1;
-			draugs(idx).Bottle.Remaining_Vol := Integer'Value(Get_Text(vol));
-			Log.RefillBottle(draugs(idx).Bottle.Name, draugs(idx).Bottle.Remaining_Vol);
+			draugs(idx).Bottle.Vol := Integer'Value(Get_Text(vol));
+			Log.RefillBottle(draugs(idx).Bottle.Name, draugs(idx).Bottle.Vol);
 			UpdateBottleButts;
 		else
 			Log.CannotRefillBottle;

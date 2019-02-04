@@ -5,7 +5,7 @@ package Recipes is
 
     type Ingredient is record
         Name : String_Access;
-        Vol : Positive;        -- Required volume in ml
+        Vol : Natural;        -- Required volume in ml
     end record;
 
     type Ingredients_Array is array(Positive range <>) of Ingredient;

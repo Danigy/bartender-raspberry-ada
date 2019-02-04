@@ -1,10 +1,10 @@
 With Ada.Text_IO; use Ada.Text_IO;
 
 package body Log is
-	procedure MissingQuantity(Name: in String_Access; Vol: in Positive) is
+	procedure MissingQuantity(Name: in String_Access; Vol: in Natural) is
 	begin
 		Put_line("Missing Quantity: " & Name.all & " has " &
-			 Positive'Image(Vol) & " ml left.");
+			 Natural'Image(Vol) & " ml left.");
 	end MissingQuantity;
 
 	procedure MissingBottle(Name: in String_Access) is
@@ -37,14 +37,14 @@ package body Log is
 		Put_line("Add Recipe: " & rec.Name.all);
 		for I in rec.Ingredients.all'Range loop
 			Put_line (rec.Ingredients.all(I).Name.all & "=> " & 
-				  Integer'Image(rec.Ingredients.all(I).Vol) & "ml.");
+				  Natural'Image(rec.Ingredients.all(I).Vol) & "ml.");
 		end loop;
 		DumpRecipeArr(recs);
 	end AddRecipe;
 
-	procedure RefillBottle(Name: in String_Access; Vol: in Positive) is
+	procedure RefillBottle(Name: in String_Access; Vol: in Natural) is
 	begin
-		Put_line("Refill Bottle: " & Positive'Image(Vol) & " ml in " &
+		Put_line("Refill Bottle: " & Natural'Image(Vol) & " ml in " &
 			 Name.all & "bottle.");
 	end RefillBottle;
 

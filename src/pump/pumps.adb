@@ -4,7 +4,7 @@ PACKAGE BODY Pumps IS
 
     FUNCTION GetTime
 	    (P		: Pump;
-	     Vol	: Integer)
+	     Vol	: Positive)
 	     RETURN Duration IS
     BEGIN
 	    return Duration(Vol) / Duration(P.Flow);
